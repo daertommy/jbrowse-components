@@ -1,27 +1,10 @@
 module.exports = api => {
-  api.cache(false)
+  api.cache(true)
   return {
-    babelrcRoots: ['.', './packages/*', './products/*', './plugins/*'],
-    comments: true,
     presets: [
       '@babel/preset-react',
-      [
-        '@babel/preset-env',
-        {
-          targets: {
-            node: 8,
-            browsers: ['> 0.5%', 'last 2 versions'],
-          },
-        },
-      ],
+      '@babel/preset-env',
       '@babel/preset-typescript',
-    ],
-    ignore: [
-      './node_modules',
-      './packages/*/node_modules',
-      './products/*/node_modules',
-      './plugins/*/node_modules',
-      './demos/*/node_modules',
     ],
   }
 }
