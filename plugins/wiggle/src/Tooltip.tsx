@@ -6,7 +6,7 @@ import { Feature } from '@jbrowse/core/util'
 
 // locals
 import { YSCALEBAR_LABEL_OFFSET, round } from './util'
-import { usePopper } from 'react-popper'
+import { useFloating } from '@floating-ui/react'
 
 const useStyles = makeStyles()(theme => ({
   // these styles come from
@@ -68,7 +68,7 @@ function Tooltip({
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
   const { classes } = useStyles()
 
-  // must be memoized a la https://github.com/popperjs/react-popper/issues/391
+  // must be memoized a la https://github.com/popperjs/@floating-ui/react/issues/391
   const virtElement = useMemo(
     () => ({
       getBoundingClientRect: () => {
@@ -89,7 +89,7 @@ function Tooltip({
     }),
     [clientRect?.top, clientMouseCoord, width, useClientY],
   )
-  const { styles, attributes } = usePopper(virtElement, anchorEl)
+  const { styles, attributes } = useFloating(virtElement, anchorEl)
 
   return featureUnderMouse ? (
     <>
