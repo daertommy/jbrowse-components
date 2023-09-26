@@ -27,9 +27,7 @@ function Header() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            href={`https://jbrowse.org/code/jb2/${
-              /* @ts-expect-error */ siteConfig.customFields.currentVersion
-            }/?config=test_data/config_demo.json&session=share-oTyYRpz9fN&password=fYAbt`}
+            href={`https://jbrowse.org/code/jb2/${siteConfig.customFields.currentVersion}/?config=test_data/config_demo.json&session=share-oTyYRpz9fN&password=fYAbt`}
           >
             Browse a cancer annotations demo web instance
           </Link>
