@@ -16,3 +16,4 @@
 **/*nclist*/**/*.json
 **/ensembl_genes/**/*.json
 **/storybook-static/*
+website/src/pages/demos.mdx

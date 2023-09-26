@@ -486,7 +486,7 @@ onClick={() => {
 ```
 
 You can see how easy the execute function is to use now. Where we currently have
-"echo ${localPath}" is where we're going to write our CLI commands.
+`"echo ${localPath}"` is where we're going to write our CLI commands.
 
 If relevant when writing your own plugin, you can put any string of valid CLI
 commands here and your child process will execute them to the best of its
