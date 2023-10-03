@@ -53,7 +53,7 @@ export const BlobLocation = types.model('BlobLocation', {
   blobId: types.string,
 })
 
-export const UriLocationRaw = types.model('UriLocation', {
+export const UriLocation = types.model('UriLocation', {
   locationType: types.literal('UriLocation'),
   uri: types.string,
   baseUri: types.maybe(types.string),
@@ -68,17 +68,6 @@ export const UriLocationRaw = types.model('UriLocation', {
       authInfo: types.frozen(),
     }),
   ),
-})
-
-export const UriLocation = types.snapshotProcessor(UriLocationRaw, {
-  postProcessor: snap => {
-    // xref https://github.com/mobxjs/mobx-state-tree/issues/1524 for Omit
-    const { baseUri, ...rest } = snap as Omit<typeof snap, symbol>
-    if (!baseUri) {
-      return rest
-    }
-    return snap
-  },
 })
 
 export const FileLocation = types.snapshotProcessor(
