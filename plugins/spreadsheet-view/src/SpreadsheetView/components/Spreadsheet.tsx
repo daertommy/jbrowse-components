@@ -34,6 +34,7 @@ const DataTable = observer(function ({ model }: { model: SpreadsheetModel }) {
     field: m,
     width: widths[i],
   }))
+
   return (
     <div ref={ref}>
       <ResizeBar

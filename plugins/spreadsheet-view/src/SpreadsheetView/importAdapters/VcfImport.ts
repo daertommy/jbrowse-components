@@ -5,22 +5,26 @@ export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
   const { selectedAssemblyName } = options
   const { header, body } = splitVcfFileHeaderAndBody(bufferToString(buffer))
   const vcfParser = new VCF({ header })
+  const lines = body.split(/\n|\r\n/)
+
+  const keys = new Set<string>()
+  const rows = lines.map(l => {
+    const [CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT] = l.split('\t')
+    const ret = Object.fromEntries(
+      INFO?.split(';').map(e => {
+        const [key, val = true] = e.split('=')
+        keys.add(key)
+        return [key, val]
+      }) || [],
+    )
+    return { CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT, ...ret }
+  })
 
   return {
     vcfParser,
-    rows: body.split(/\n|\r\n/).map((row, idx) => {
-      const [CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT] =
-        row.split('\t')
+    rows: rows.map((row, idx) => {
       return {
-        CHROM,
-        POS,
-        ID,
-        REF,
-        ALT,
-        QUAL,
-        FILTER,
-        INFO,
-        FORMAT,
+        ...row,
         id: idx,
         __lineData: row,
       }
@@ -33,8 +37,8 @@ export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
       'ALT',
       'QUAL',
       'FILTER',
-      'INFO',
       'FORMAT',
+      ...keys,
     ],
     assemblyName: selectedAssemblyName,
   }

@@ -189,6 +189,7 @@ function stateModelFactory() {
             .then(buffer => (self.requiresUnzip ? unzip(buffer) : buffer))
             .then(buffer => typeParser(buffer, self))
             .then(spreadsheet => {
+              this.setLoaded()
               getParent<SpreadsheetViewStateModel>(self).displaySpreadsheet(
                 spreadsheet,
               )
