@@ -7,10 +7,7 @@ import { ResizeHandle } from '@jbrowse/core/ui'
 // locals
 import ImportWizard from './ImportWizard'
 import Spreadsheet from './Spreadsheet'
-import GlobalFilterControls from './GlobalFilterControls'
-import ColumnFilterControls from './ColumnFilterControls'
 import { SpreadsheetViewModel } from '../models/SpreadsheetView'
-import StatusBar from './StatusBar'
 
 const headerHeight = 52
 const colFilterHeight = 46
@@ -47,35 +44,13 @@ const SpreadsheetView = observer(function ({
   const {
     spreadsheet,
     filterControls,
-    hideFilterControls,
     hideVerticalResizeHandle,
     mode,
     height,
   } = model
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(100)
 
   return (
     <div>
-      {mode !== 'display' || hideFilterControls ? null : (
-        <>
-          <Grid container direction="row" className={classes.header}>
-            <Grid item>
-              <GlobalFilterControls model={model} />
-            </Grid>
-          </Grid>
-          {filterControls.columnFilters.map((f, i) => (
-            <ColumnFilterControls
-              key={`${f.columnNumber}-${i}`}
-              viewModel={model}
-              filterModel={f}
-              columnNumber={f.columnNumber}
-              height={colFilterHeight}
-            />
-          ))}
-        </>
-      )}
-
       {mode === 'import' ? (
         <ImportWizard model={model.importWizard} />
       ) : (
@@ -88,8 +63,6 @@ const SpreadsheetView = observer(function ({
           >
             {spreadsheet ? (
               <Spreadsheet
-                page={page}
-                rowsPerPage={rowsPerPage}
                 model={spreadsheet}
                 height={
                   height -
@@ -102,16 +75,7 @@ const SpreadsheetView = observer(function ({
           </div>
         </div>
       )}
-      {spreadsheet ? (
-        <StatusBar
-          page={page}
-          setPage={setPage}
-          rowsPerPage={rowsPerPage}
-          setRowsPerPage={setRowsPerPage}
-          mode={mode}
-          spreadsheet={spreadsheet}
-        />
-      ) : null}
+
       {hideVerticalResizeHandle ? null : (
         <ResizeHandle
           onDrag={model.resizeHeight}

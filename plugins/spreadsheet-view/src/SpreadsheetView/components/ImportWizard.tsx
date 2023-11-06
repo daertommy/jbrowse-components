@@ -16,7 +16,6 @@ import { FileSelector, ErrorMessage, AssemblySelector } from '@jbrowse/core/ui'
 
 // locals
 import { ImportWizardModel } from '../models/ImportWizard'
-import NumberEditor from './NumberEditor'
 import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()({
@@ -81,23 +80,6 @@ const ImportWizard = observer(({ model }: { model: ImportWizardModel }) => {
         <div>
           <FormControl component="fieldset">
             <FormLabel component="legend">Column Names</FormLabel>
-            <FormControlLabel
-              disabled={!showRowControls}
-              label="has column names on line"
-              labelPlacement="end"
-              control={
-                <Checkbox
-                  checked={hasColumnNameLine}
-                  onClick={() => model.toggleHasColumnNameLine()}
-                />
-              }
-            />
-            <NumberEditor
-              model={model}
-              disabled={!showRowControls || !hasColumnNameLine}
-              modelPropName="columnNameLineNumber"
-              modelSetterName="setColumnNameLineNumber"
-            />
           </FormControl>
         </div>
       ) : null}

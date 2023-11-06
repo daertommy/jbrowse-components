@@ -4,7 +4,7 @@ import { types, getParent, addDisposer, Instance } from 'mobx-state-tree'
 
 import PluginManager from '@jbrowse/core/PluginManager'
 import { getSession, Region } from '@jbrowse/core/util'
-import { readConfObject } from '@jbrowse/core/configuration'
+import { getConf } from '@jbrowse/core/configuration'
 import { ElementId } from '@jbrowse/core/util/types/mst'
 import { BaseViewModel } from '@jbrowse/core/pluggableElementTypes/models'
 import { SpreadsheetViewStateModel } from '@jbrowse/plugin-spreadsheet-view'
@@ -114,7 +114,7 @@ function SvInspectorViewF(pluginManager: PluginManager) {
        */
       get assemblyName() {
         const { assembly } = self.spreadsheetView
-        return assembly ? readConfObject(assembly, 'name') : undefined
+        return assembly ? getConf(assembly, 'name') : undefined
       },
       /**
        * #getter
