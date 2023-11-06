@@ -8,14 +8,18 @@ import { addDisposer, types, getParent, Instance } from 'mobx-state-tree'
  */
 function x() {} // eslint-disable-line @typescript-eslint/no-unused-vars
 
+interface SpreadsheetData {
+  rows: Record<string, unknown>[]
+  columns: string[]
+}
+
 function stateModelFactory() {
   return types
     .model('Spreadsheet', {
       assemblyName: types.maybe(types.string),
     })
     .volatile(() => ({
-      isLoaded: false,
-      data: undefined as unknown,
+      data: undefined as SpreadsheetData | undefined,
     }))
     .views(self => ({
       /**
@@ -28,10 +32,11 @@ function stateModelFactory() {
       },
     }))
     .actions(self => ({
-      setLoaded(flag: boolean) {
-        self.isLoaded = flag
+      setData(data?: SpreadsheetData) {
+        self.data = data
       },
     }))
+
     .actions(self => ({
       afterAttach() {
         addDisposer(
@@ -42,7 +47,6 @@ function stateModelFactory() {
             try {
               if (self.assemblyName) {
                 await assemblyManager.waitForAssembly(self.assemblyName)
-                self.setLoaded(true)
               }
             } catch (error) {
               console.error(error)

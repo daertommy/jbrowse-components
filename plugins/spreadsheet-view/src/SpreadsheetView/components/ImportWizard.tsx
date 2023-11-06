@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import {
   Button,
-  Checkbox,
   FormControl,
   FormGroup,
   FormLabel,
@@ -30,15 +29,7 @@ const ImportWizard = observer(({ model }: { model: ImportWizardModel }) => {
   const session = getSession(model)
   const { classes } = useStyles()
   const { assemblyNames, assemblyManager } = session
-  const {
-    fileType,
-    canCancel,
-    fileSource,
-    isReadyToOpen,
-    fileTypes,
-    hasColumnNameLine,
-    error,
-  } = model
+  const { fileType, canCancel, fileSource, fileTypes, error } = model
   const [selected, setSelected] = useState(assemblyNames[0])
   const err = assemblyManager.get(selected)?.error || error
   const showRowControls = fileType === 'CSV' || fileType === 'TSV'
@@ -102,7 +93,7 @@ const ImportWizard = observer(({ model }: { model: ImportWizardModel }) => {
           </Button>
         ) : null}{' '}
         <Button
-          disabled={!isReadyToOpen || !!err}
+          disabled={!!err}
           variant="contained"
           data-testid="open_spreadsheet"
           color="primary"

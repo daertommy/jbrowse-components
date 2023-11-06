@@ -1,46 +1,12 @@
-import {
-  types,
-  getParent,
-  getEnv,
-  cast,
-  SnapshotIn,
-  Instance,
-} from 'mobx-state-tree'
+import { types, getParent, cast, SnapshotIn, Instance } from 'mobx-state-tree'
 import { BaseViewModel } from '@jbrowse/core/pluggableElementTypes/models'
-import { MenuItem } from '@jbrowse/core/ui'
 import { getSession } from '@jbrowse/core/util'
 
 // icons
-import DoneIcon from '@mui/icons-material/Done'
 import FolderOpenIcon from '@mui/icons-material/FolderOpen'
 
 import spreadsheetModelFactory, { SpreadsheetModel } from './Spreadsheet'
-import FilterControlsModel from './FilterControls'
 import importWizardFactory from './ImportWizard'
-
-export type MenuItemWithDisabledCallback = MenuItem & {
-  disabled?:
-    | boolean
-    | ((
-        viewModel: unknown,
-        spreadsheetModel: SpreadsheetModel,
-        rowNumber: number,
-        row: SpreadsheetModel['rowSet']['rows'][0],
-      ) => boolean)
-}
-
-const defaultRowMenuItems: MenuItemWithDisabledCallback[] = [
-  {
-    label: 'Toggle select',
-    icon: DoneIcon,
-    onClick(_view: unknown, spreadsheet: SpreadsheetModel) {
-      const rowNumber = spreadsheet.rowMenuPosition?.rowNumber
-      if (rowNumber !== undefined) {
-        spreadsheet.rowSet.rows[+rowNumber - 1].toggleSelect()
-      }
-    },
-  },
-]
 
 const minHeight = 40
 const defaultHeight = 440
@@ -81,25 +47,7 @@ function stateModelFactory() {
          * #property
          */
         hideVerticalResizeHandle: false,
-        /**
-         * #property
-         */
-        hideFilterControls: false,
-        /**
-         * #property
-         */
-        filterControls: types.optional(FilterControlsModel, () =>
-          FilterControlsModel.create({}),
-        ),
-        /**
-         * #property
-         * switch specifying whether we are showing the import wizard or the
-         * spreadsheet in our viewing area
-         */
-        mode: types.optional(
-          types.enumeration('SpreadsheetViewMode', ['import', 'display']),
-          'import',
-        ),
+
         /**
          * #property
          */
@@ -107,39 +55,15 @@ function stateModelFactory() {
         /**
          * #property
          */
-        spreadsheet: types.maybe(SpreadsheetModelType),
+        spreadsheet: types.optional(SpreadsheetModelType, () =>
+          SpreadsheetModelType.create(),
+        ),
       }),
     )
     .volatile(() => ({
       width: 400,
-      rowMenuItems: defaultRowMenuItems,
     }))
     .views(self => ({
-      /**
-       * #getter
-       */
-      get readyToDisplay() {
-        return !!self.spreadsheet && self.spreadsheet.isLoaded
-      },
-      /**
-       * #getter
-       */
-      get hideRowSelection() {
-        return !!getEnv(self).hideRowSelection
-      },
-      /**
-       * #getter
-       */
-      get outputRows() {
-        if (self.spreadsheet?.rowSet.isLoaded) {
-          const selected = self.spreadsheet.rowSet.selectedFilteredRows
-          if (selected.length) {
-            return selected
-          }
-          return self.spreadsheet.rowSet.sortedFilteredRows
-        }
-        return undefined
-      },
       /**
        * #getter
        */
@@ -150,12 +74,6 @@ function stateModelFactory() {
       },
     }))
     .actions(self => ({
-      /**
-       * #action
-       */
-      setRowMenuItems(newItems: MenuItem[]) {
-        self.rowMenuItems = newItems
-      },
       /**
        * #action
        */
@@ -191,25 +109,10 @@ function stateModelFactory() {
        * #action
        * load a new spreadsheet and set our mode to display it
        */
-      displaySpreadsheet(spreadsheet: SnapshotIn<SpreadsheetModel>) {
-        self.filterControls.clearAllFilters()
-        self.spreadsheet = cast(spreadsheet)
-        self.mode = 'display'
+      displaySpreadsheet(spreadsheet?: unknown) {
+        self.spreadsheet.setData(spreadsheet)
       },
-      /**
-       * #action
-       */
-      setImportMode() {
-        self.mode = 'import'
-      },
-      /**
-       * #action
-       */
-      setDisplayMode() {
-        if (self.readyToDisplay) {
-          self.mode = 'display'
-        }
-      },
+
       /**
        * #action
        */
@@ -226,7 +129,7 @@ function stateModelFactory() {
         return [
           {
             label: 'Return to import form',
-            onClick: () => self.setImportMode(),
+            onClick: () => self.displaySpreadsheet(undefined),
             icon: FolderOpenIcon,
           },
         ]

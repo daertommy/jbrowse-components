@@ -1,6 +1,7 @@
 import { types, getParent, Instance } from 'mobx-state-tree'
 import { openLocation } from '@jbrowse/core/util/io'
 import { getSession, getEnv } from '@jbrowse/core/util'
+import { SpreadsheetViewStateModel } from './SpreadsheetView'
 
 const IMPORT_SIZE_LIMIT = 40_000_000
 
@@ -188,9 +189,9 @@ function stateModelFactory() {
             .then(buffer => (self.requiresUnzip ? unzip(buffer) : buffer))
             .then(buffer => typeParser(buffer, self))
             .then(spreadsheet => {
-              this.setLoaded()
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              getParent<any>(self).displaySpreadsheet(spreadsheet)
+              getParent<SpreadsheetViewStateModel>(self).displaySpreadsheet(
+                spreadsheet,
+              )
             })
         } catch (e) {
           console.error(e)
