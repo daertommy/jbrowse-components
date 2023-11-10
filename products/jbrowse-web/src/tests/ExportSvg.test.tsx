@@ -1,7 +1,7 @@
 import { fireEvent, waitFor } from '@testing-library/react'
 import fs from 'fs'
 import path from 'path'
-import FileSaver from 'file-saver'
+import { saveAs } from 'file-saver'
 import volvoxConfig from '../../test_data/volvox/config.json'
 
 // locals
@@ -11,11 +11,17 @@ import { hts, createView, setup, doBeforeEach, mockConsoleWarn } from './util'
 global.Blob = (content, options) => ({ content, options })
 
 // mock from https://stackoverflow.com/questions/44686077
-jest.mock('file-saver', () => ({ saveAs: jest.fn() }))
-
+jest.mock('file-saver', () => {
+  return {
+    ...jest.requireActual('file-saver'),
+    saveAs: jest.fn(),
+  }
+})
 setup()
 
 beforeEach(() => {
+  // @ts-expect-error
+  saveAs.mockReset()
   jest.clearAllMocks()
   doBeforeEach()
 })
@@ -35,10 +41,10 @@ test('export svg of lgv', async () => {
   fireEvent.click(await findByText('Export SVG', ...opts))
   fireEvent.click(await findByText('Submit', ...opts))
 
-  await waitFor(() => expect(FileSaver.saveAs).toHaveBeenCalled(), delay)
+  await waitFor(() => expect(saveAs).toHaveBeenCalled(), delay)
 
   // @ts-expect-error
-  const svg = FileSaver.saveAs.mock.calls[0][0].content[0]
+  const svg = saveAs.mock.calls[0][0].content[0]
   const dir = path.dirname(module.filename)
   fs.writeFileSync(`${dir}/__image_snapshots__/lgv_snapshot.svg`, svg)
   expect(svg).toMatchSnapshot()
@@ -193,10 +199,10 @@ test('export svg of synteny', async () => {
     fireEvent.click((await findAllByText('Export SVG', ...opts))[0])
     fireEvent.click(await findByText('Submit', ...opts))
 
-    await waitFor(() => expect(FileSaver.saveAs).toHaveBeenCalled(), delay)
+    await waitFor(() => expect(saveAs).toHaveBeenCalled(), delay)
 
     // @ts-expect-error
-    const svg = FileSaver.saveAs.mock.calls[0][0].content[0]
+    const svg = saveAs.mock.calls[0][0].content[0]
     const dir = path.dirname(module.filename)
     fs.writeFileSync(`${dir}/__image_snapshots__/synteny_snapshot.svg`, svg)
     expect(svg).toMatchSnapshot()
@@ -227,10 +233,10 @@ test('export svg of circular', async () => {
   fireEvent.click(await findByText('Export SVG', ...opts))
   fireEvent.click(await findByText('Submit', ...opts))
 
-  await waitFor(() => expect(FileSaver.saveAs).toHaveBeenCalled(), delay)
+  await waitFor(() => expect(saveAs).toHaveBeenCalled(), delay)
 
   // @ts-expect-error
-  const svg = FileSaver.saveAs.mock.calls[0][0].content[0]
+  const svg = saveAs.mock.calls[0][0].content[0]
   const dir = path.dirname(module.filename)
   fs.writeFileSync(`${dir}/__image_snapshots__/circular_snapshot.svg`, svg)
   expect(svg).toMatchSnapshot()
@@ -323,10 +329,10 @@ test('export svg of dotplot', async () => {
   fireEvent.click(await findByText('Export SVG', ...opts))
   fireEvent.click(await findByText('Submit', ...opts))
 
-  await waitFor(() => expect(FileSaver.saveAs).toHaveBeenCalled(), delay)
+  await waitFor(() => expect(saveAs).toHaveBeenCalled(), delay)
 
   // @ts-expect-error
-  const svg = FileSaver.saveAs.mock.calls[0][0].content[0]
+  const svg = saveAs.mock.calls[0][0].content[0]
   const dir = path.dirname(module.filename)
   fs.writeFileSync(`${dir}/__image_snapshots__/dotplot_snapshot.svg`, svg)
   expect(svg).toMatchSnapshot()

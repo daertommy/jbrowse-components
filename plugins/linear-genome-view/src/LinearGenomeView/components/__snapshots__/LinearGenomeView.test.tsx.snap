@@ -516,6 +516,7 @@ exports[`renders one track, one region 1`] = `
             <div
               class="css-1y9lrrz-display"
               data-testid="display-testConfig-LinearBareDisplay"
+              style=""
             >
               <div
                 class="css-d6gpow-linearBlocks"
