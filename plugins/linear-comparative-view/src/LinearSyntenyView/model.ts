@@ -3,7 +3,6 @@ import { types, Instance } from 'mobx-state-tree'
 import { transaction } from 'mobx'
 import { getSession } from '@jbrowse/core/util'
 import PluginManager from '@jbrowse/core/PluginManager'
-import { saveAs } from 'file-saver'
 
 // icons
 import CropFreeIcon from '@mui/icons-material/CropFree'
@@ -87,6 +86,7 @@ export default function stateModelFactory(pluginManager: PluginManager) {
         )
         const html = await renderToSvg(self as LinearSyntenyViewModel, opts)
         const blob = new Blob([html], { type: 'image/svg+xml' })
+        const { saveAs } = await import('file-saver')
         saveAs(blob, opts.filename || 'image.svg')
       },
     }))

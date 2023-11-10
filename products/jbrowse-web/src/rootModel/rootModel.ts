@@ -391,11 +391,12 @@ export default function RootModel({
             {
               label: 'Export session',
               icon: GetAppIcon,
-              onClick: (session: IAnyStateTreeNode) => {
+              onClick: async (session: IAnyStateTreeNode) => {
                 const sessionBlob = new Blob(
                   [JSON.stringify({ session: getSnapshot(session) }, null, 2)],
                   { type: 'text/plain;charset=utf-8' },
                 )
+                const { saveAs } = await import('file-saver')
                 saveAs(sessionBlob, 'session.json')
               },
             },
