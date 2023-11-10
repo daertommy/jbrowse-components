@@ -35,16 +35,14 @@ import {
   MultiWiggleGetSources,
 } from './WiggleRPC/rpcMethods'
 
-import {
-  ReactComponent as LinearWiggleDisplayReactComponent,
-  modelFactory as linearWiggleDisplayModelFactory,
-} from './LinearWiggleDisplay'
+import { modelFactory as linearWiggleDisplayModelFactory } from './LinearWiggleDisplay'
 
 import {
   ReactComponent as XYPlotRendererReactComponent,
   configSchema as xyPlotRendererConfigSchema,
   XYPlotRenderer,
 } from './XYPlotRenderer'
+import { lazy } from 'react'
 
 export default class WigglePlugin extends Plugin {
   name = 'WigglePlugin'
@@ -119,12 +117,13 @@ export default class WigglePlugin extends Plugin {
 
 export * from './util'
 
-export { default as WiggleRendering } from './WiggleRendering'
-export {
-  Tooltip,
-  ReactComponent as LinearWiggleDisplayReactComponent,
-  modelFactory as linearWiggleDisplayModelFactory,
-} from './LinearWiggleDisplay'
-export { type TooltipContentsComponent } from './Tooltip'
+const WiggleRendering = lazy(() => import('./WiggleRendering'))
+const LinearWiggleDisplayReactComponent = lazy(
+  () => import('./LinearWiggleDisplay/components/WiggleDisplayComponent'),
+)
+const Tooltip = lazy(() => import('./LinearWiggleDisplay/components/Tooltip'))
 
+export { LinearWiggleDisplayReactComponent, Tooltip, WiggleRendering }
+export { modelFactory as linearWiggleDisplayModelFactory } from './LinearWiggleDisplay'
+export { type TooltipContentsComponent } from './Tooltip'
 export { default as WiggleBaseRenderer } from './WiggleBaseRenderer'
