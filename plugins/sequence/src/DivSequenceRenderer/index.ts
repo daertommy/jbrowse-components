@@ -1,8 +1,10 @@
+import { lazy } from 'react'
 import PluginManager from '@jbrowse/core/PluginManager'
 
 import { Region } from '@jbrowse/core/util/types'
 import FeatureRendererType from '@jbrowse/core/pluggableElementTypes/renderers/FeatureRendererType'
-import ReactComponent from './components/DivSequenceRendering'
+
+// locals
 import configSchema from './configSchema'
 
 /* adjust in both directions */
@@ -23,7 +25,7 @@ export default (pluginManager: PluginManager) => {
     () =>
       new DivSequenceRenderer({
         name: 'DivSequenceRenderer',
-        ReactComponent,
+        ReactComponent: lazy(() => import('./components/DivSequenceRendering')),
         configSchema,
         pluginManager,
       }),

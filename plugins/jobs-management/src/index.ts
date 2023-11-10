@@ -7,7 +7,7 @@ import WidgetType from '@jbrowse/core/pluggableElementTypes/WidgetType'
 import {
   stateModelFactory as JobsListStateModelFactory,
   configSchema as JobsListConfigSchema,
-} from '../../jobs-management/src/JobsListWidget'
+} from './JobsListWidget'
 import { isSessionModelWithWidgets } from '@jbrowse/core/util'
 
 export default class extends Plugin {
@@ -21,10 +21,7 @@ export default class extends Plugin {
         configSchema: JobsListConfigSchema,
         stateModel: JobsListStateModelFactory(pluginManager),
         ReactComponent: lazy(
-          () =>
-            import(
-              '../../jobs-management/src/JobsListWidget/components/JobsListWidget'
-            ),
+          () => import('./JobsListWidget/components/JobsListWidget'),
         ),
       })
     })

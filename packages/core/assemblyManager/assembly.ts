@@ -1,5 +1,4 @@
 import { getParent, types, Instance, IAnyType } from 'mobx-state-tree'
-import jsonStableStringify from 'json-stable-stringify'
 import AbortablePromiseCache from 'abortable-promise-cache'
 
 // locals
@@ -108,7 +107,7 @@ function checkRefName(refName: string) {
 }
 
 function getAdapterId(adapterConf: unknown) {
-  return jsonStableStringify(adapterConf)
+  return JSON.stringify(adapterConf)
 }
 
 type RefNameAliases = Record<string, string | undefined>
