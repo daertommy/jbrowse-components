@@ -11,7 +11,7 @@ export interface NewJob extends SnapshotIn<typeof Job> {
 /**
  * #stateModel JobsListModel
  */
-export default function f(_pluginManager: PluginManager) {
+export function stateModelFactory(_pluginManager: PluginManager) {
   return types
     .model('JobsListModel', {
       /**
@@ -112,5 +112,5 @@ export default function f(_pluginManager: PluginManager) {
     }))
 }
 
-export type JobsListStateModel = ReturnType<typeof f>
+export type JobsListStateModel = ReturnType<typeof stateModelFactory>
 export type JobsListModel = Instance<JobsListStateModel>

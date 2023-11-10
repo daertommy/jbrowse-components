@@ -1,6 +1,12 @@
 import React from 'react'
 import { saveAs } from 'file-saver'
-import { render, cleanup, fireEvent, within } from '@testing-library/react'
+import {
+  render,
+  cleanup,
+  fireEvent,
+  within,
+  waitFor,
+} from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 import { createTestSession } from '@jbrowse/web/src/rootModel'
@@ -174,7 +180,12 @@ describe('<GridBookmarkWidget />', () => {
       type: 'text/x-bed;charset=utf-8',
     })
 
-    expect(saveAs).toHaveBeenCalledWith(blob, 'jbrowse_bookmarks_volMyt1.bed')
+    await waitFor(() =>
+      expect(saveAs).toHaveBeenCalledWith(
+        blob,
+        'jbrowse_bookmarks_volMyt1.bed',
+      ),
+    )
   })
 
   it('downloads a TSV file correctly', async () => {
@@ -204,14 +215,12 @@ describe('<GridBookmarkWidget />', () => {
       'gridBookmarkWidget',
     ) as GridBookmarkModel
 
-    const bookmark = {
+    model.addBookmark({
       refName: 'ctgA',
       start: 0,
       end: 8,
       assemblyName: 'volMyt1',
-    }
-
-    model.addBookmark(bookmark)
+    })
 
     const { findByText, findByTestId, getByRole, findAllByRole } = render(
       <GridBookmarkWidget model={model} />,
@@ -228,6 +237,8 @@ describe('<GridBookmarkWidget />', () => {
       type: 'text/tab-separated-values;charset=utf-8',
     })
 
-    expect(saveAs).toHaveBeenCalledWith(blob, 'jbrowse_bookmarks.tsv')
+    await waitFor(() =>
+      expect(saveAs).toHaveBeenCalledWith(blob, 'jbrowse_bookmarks.tsv'),
+    )
   })
 })
