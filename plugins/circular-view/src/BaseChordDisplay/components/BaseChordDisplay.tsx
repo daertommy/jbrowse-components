@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { observer } from 'mobx-react'
 
 // locals
@@ -17,12 +17,11 @@ const BaseChordDisplay = observer(function ({
 }) {
   if (display.error) {
     return <DisplayError model={display} />
-  }
-  if (!display.filled) {
+  } else if (!display.filled) {
     return <Loading model={display} />
+  } else {
+    return <Suspense fallback={null}>{display.reactElement}</Suspense>
   }
-
-  return display.reactElement
 })
 
 export default BaseChordDisplay

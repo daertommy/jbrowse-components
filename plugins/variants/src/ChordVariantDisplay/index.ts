@@ -1,5 +1,5 @@
+import { lazy } from 'react'
 import PluginManager from '@jbrowse/core/PluginManager'
-import { BaseChordDisplayComponent } from '@jbrowse/plugin-circular-view'
 import DisplayType from '@jbrowse/core/pluggableElementTypes/DisplayType'
 
 // locals
@@ -17,7 +17,7 @@ export default (pluginManager: PluginManager) => {
       stateModel,
       trackType: 'VariantTrack',
       viewType: 'CircularView',
-      ReactComponent: BaseChordDisplayComponent,
+      ReactComponent: lazy(() => import('./BaseChordDisplayComponent')),
     })
   })
 }
