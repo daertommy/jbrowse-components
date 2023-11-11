@@ -66,7 +66,7 @@ const ViewTitle = observer(({ view }: { view: IBaseViewModel }) => {
         </div>
       </IconButton>
       {dlgOpen ? (
-        <Suspense fallback={<div />}>
+        <Suspense fallback={null}>
           <VersionAboutDialog
             open
             onClose={() => setDlgOpen(false)}

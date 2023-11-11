@@ -78,7 +78,7 @@ const HierarchicalTrackSelectorHeader = observer(function ({
         </Button>
       </div>
 
-      <Suspense fallback={<div />}>
+      <Suspense fallback={null}>
         {facetedOpen ? (
           <FacetedDialog
             handleClose={() => setFacetedOpen(false)}

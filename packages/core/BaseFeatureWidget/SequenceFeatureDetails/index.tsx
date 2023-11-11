@@ -53,7 +53,7 @@ export default function SequenceFeaturePanel({ model, feature }: BaseProps) {
         </Suspense>
       ) : null}
       {helpShown ? (
-        <Suspense fallback={<div />}>
+        <Suspense fallback={null}>
           <HelpDlg handleClose={() => setHelpShown(false)} />
         </Suspense>
       ) : null}
