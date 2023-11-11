@@ -16,7 +16,7 @@ function ShareBookmarks({ model }: { model: GridBookmarkModel }) {
         Share
       </Button>
       {open ? (
-        <Suspense fallback={<React.Fragment />}>
+        <Suspense fallback={null}>
           <ShareBookmarksDialog onClose={() => setOpen(false)} model={model} />
         </Suspense>
       ) : null}

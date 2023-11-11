@@ -25,7 +25,7 @@ const ExportBookmarks = observer(function ExportBookmarks({
         Export
       </Button>
       {open ? (
-        <Suspense fallback={<React.Fragment />}>
+        <Suspense fallback={null}>
           <ExportBookmarksDialog onClose={() => setOpen(false)} model={model} />
         </Suspense>
       ) : null}

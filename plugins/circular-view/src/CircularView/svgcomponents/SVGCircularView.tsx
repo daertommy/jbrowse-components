@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import { ThemeProvider } from '@mui/material'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { when } from 'mobx'
@@ -33,28 +33,26 @@ export async function renderToSvg(model: CGV, opts: ExportSvgOptions) {
 
   // the xlink namespace is used for rendering <image> tag
   return renderToStaticMarkup(
-    <Suspense fallback={null}>
-      <ThemeProvider theme={createJBrowseTheme(theme)}>
-        <Wrapper>
-          <svg
-            width={width}
-            height={height}
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-            viewBox={[0, 0, width + shift * 2, height].toString()}
-          >
-            <SVGBackground width={width} height={height} shift={shift} />
-            <g transform={`translate(${centerXY}) rotate(${deg})`}>
-              {staticSlices.map((slice, i) => (
-                <Ruler key={i} model={model} slice={slice} />
-              ))}
-              {displayResults.map(({ result }, i) => (
-                <React.Fragment key={i}>{result}</React.Fragment>
-              ))}
-            </g>
-          </svg>
-        </Wrapper>
-      </ThemeProvider>
-    </Suspense>,
+    <ThemeProvider theme={createJBrowseTheme(theme)}>
+      <Wrapper>
+        <svg
+          width={width}
+          height={height}
+          xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
+          viewBox={[0, 0, width + shift * 2, height].toString()}
+        >
+          <SVGBackground width={width} height={height} shift={shift} />
+          <g transform={`translate(${centerXY}) rotate(${deg})`}>
+            {staticSlices.map((slice, i) => (
+              <Ruler key={i} model={model} slice={slice} />
+            ))}
+            {displayResults.map(({ result }, i) => (
+              <React.Fragment key={i}>{result}</React.Fragment>
+            ))}
+          </g>
+        </svg>
+      </Wrapper>
+    </ThemeProvider>,
   )
 }

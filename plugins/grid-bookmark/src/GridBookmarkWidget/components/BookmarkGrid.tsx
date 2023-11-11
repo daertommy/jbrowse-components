@@ -146,7 +146,7 @@ const BookmarkGrid = observer(function ({
         />
       </div>
       {dialogRow ? (
-        <Suspense fallback={<React.Fragment />}>
+        <Suspense fallback={null}>
           <EditBookmarkLabelDialog
             onClose={() => setDialogRow(undefined)}
             model={model}

@@ -23,7 +23,7 @@ const ImportBookmarks = observer(function ({
         Import
       </Button>
       {open ? (
-        <Suspense fallback={<React.Fragment />}>
+        <Suspense fallback={null}>
           <ImportBookmarksDialog onClose={() => setOpen(false)} model={model} />
         </Suspense>
       ) : null}

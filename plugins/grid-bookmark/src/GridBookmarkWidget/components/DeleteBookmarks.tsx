@@ -20,7 +20,7 @@ function DeleteBookmarks({ model }: { model: GridBookmarkModel }) {
         Delete
       </Button>
       {open ? (
-        <Suspense fallback={<React.Fragment />}>
+        <Suspense fallback={null}>
           <DeleteBookmarksDialog model={model} onClose={() => setOpen(false)} />
         </Suspense>
       ) : null}

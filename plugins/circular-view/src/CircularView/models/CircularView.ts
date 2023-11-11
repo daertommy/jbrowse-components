@@ -11,6 +11,7 @@ import {
 } from 'mobx-state-tree'
 import { Region } from '@jbrowse/core/util/types/mst'
 import { transaction } from 'mobx'
+import { saveAs } from 'file-saver'
 import {
   AnyConfigurationModel,
   readConfObject,
@@ -596,7 +597,6 @@ function stateModelFactory(pluginManager: PluginManager) {
         const { renderToSvg } = await import('../svgcomponents/SVGCircularView')
         const html = await renderToSvg(self as CircularViewModel, opts)
         const blob = new Blob([html], { type: 'image/svg+xml' })
-        const { saveAs } = await import('file-saver')
         saveAs(blob, opts.filename || 'image.svg')
       },
     }))

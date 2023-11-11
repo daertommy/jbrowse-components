@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import { observer } from 'mobx-react'
 import { ResizeHandle } from '@jbrowse/core/ui'
 import { assembleLocString } from '@jbrowse/core/util'
@@ -38,13 +38,11 @@ const Slices = observer(({ model }: { model: CircularViewModel }) => {
       {model.tracks.map(track => {
         const display = track.displays[0]
         return (
-          <Suspense key={display.id} fallback={null}>
-            <display.RenderingComponent
-              key={display.id}
-              display={display}
-              view={model}
-            />
-          </Suspense>
+          <display.RenderingComponent
+            key={display.id}
+            display={display}
+            view={model}
+          />
         )
       })}
     </>
@@ -89,43 +87,41 @@ const CircularViewLoaded = observer(function ({
   } = model
   const { classes } = useStyles()
   return (
-    <Suspense fallback={null}>
-      <div className={classes.root} style={{ width, height }} data-testid={id}>
-        <div className={classes.scroller} style={{ width, height }}>
-          <svg
-            style={{
-              transform: `rotate(${offsetRadians}rad)`,
-              transition: 'transform 0.5s',
-              transformOrigin: centerXY.map(x => `${x}px`).join(' '),
-              position: 'absolute',
-              left: 0,
-              top: 0,
-            }}
-            width={figureWidth}
-            height={figureHeight}
-          >
-            <g transform={`translate(${centerXY})`}>
-              <Slices model={model} />
-            </g>
-          </svg>
-        </div>
-        <Controls model={model} />
-        {hideVerticalResizeHandle ? null : (
-          <ResizeHandle
-            onDrag={model.resizeHeight}
-            style={{
-              height: dragHandleHeight,
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              background: '#ccc',
-              boxSizing: 'border-box',
-              borderTop: '1px solid #fafafa',
-            }}
-          />
-        )}
+    <div className={classes.root} style={{ width, height }} data-testid={id}>
+      <div className={classes.scroller} style={{ width, height }}>
+        <svg
+          style={{
+            transform: `rotate(${offsetRadians}rad)`,
+            transition: 'transform 0.5s',
+            transformOrigin: centerXY.map(x => `${x}px`).join(' '),
+            position: 'absolute',
+            left: 0,
+            top: 0,
+          }}
+          width={figureWidth}
+          height={figureHeight}
+        >
+          <g transform={`translate(${centerXY})`}>
+            <Slices model={model} />
+          </g>
+        </svg>
       </div>
-    </Suspense>
+      <Controls model={model} />
+      {hideVerticalResizeHandle ? null : (
+        <ResizeHandle
+          onDrag={model.resizeHeight}
+          style={{
+            height: dragHandleHeight,
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            background: '#ccc',
+            boxSizing: 'border-box',
+            borderTop: '1px solid #fafafa',
+          }}
+        />
+      )}
+    </div>
   )
 })
 
