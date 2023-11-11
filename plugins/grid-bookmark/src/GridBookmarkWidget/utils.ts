@@ -1,4 +1,3 @@
-import { saveAs } from 'file-saver'
 import { getSession, assembleLocString } from '@jbrowse/core/util'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 import { AbstractViewModel } from '@jbrowse/core/util/types'
@@ -45,10 +44,11 @@ export async function navToBookmark(
   }
 }
 
-export function downloadBookmarkFile(
+export async function downloadBookmarkFile(
   fileFormat: string,
   model: GridBookmarkModel,
 ) {
+  const { saveAs } = await import('file-saver')
   const { selectedBookmarks, bookmarksWithValidAssemblies } = model
   const bookmarksToDownload =
     selectedBookmarks.length === 0

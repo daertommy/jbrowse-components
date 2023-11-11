@@ -37,7 +37,6 @@ import {
 
 import Base1DView from '@jbrowse/core/util/Base1DViewModel'
 import { moveTo, pxToBp, bpToPx } from '@jbrowse/core/util/Base1DUtils'
-import { saveAs } from 'file-saver'
 import clone from 'clone'
 import PluginManager from '@jbrowse/core/PluginManager'
 
@@ -942,6 +941,7 @@ export function stateModelFactory(pluginManager: PluginManager) {
         )
         const html = await renderToSvg(self as LinearGenomeViewModel, opts)
         const blob = new Blob([html], { type: 'image/svg+xml' })
+        const { saveAs } = await import('file-saver')
         saveAs(blob, opts.filename || 'image.svg')
       },
     }))

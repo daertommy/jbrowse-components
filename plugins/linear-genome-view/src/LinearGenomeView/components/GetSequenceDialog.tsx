@@ -244,7 +244,8 @@ const GetSequenceDialog = observer(function ({
           {copied ? 'Copied' : 'Copy to clipboard'}
         </Button>
         <Button
-          onClick={() => {
+          onClick={async () => {
+            const { saveAs } = await import('file-saver')
             saveAs(
               new Blob([sequence || ''], {
                 type: 'text/x-fasta;charset=utf-8',

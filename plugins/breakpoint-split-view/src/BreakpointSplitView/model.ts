@@ -8,7 +8,6 @@ import {
   Instance,
 } from 'mobx-state-tree'
 import { autorun } from 'mobx'
-import { saveAs } from 'file-saver'
 
 // jbrowse
 import {
@@ -159,6 +158,7 @@ export default function stateModelFactory(pluginManager: PluginManager) {
         )
         const html = await renderToSvg(self as BreakpointViewModel, opts)
         const blob = new Blob([html], { type: 'image/svg+xml' })
+        const { saveAs } = await import('file-saver')
         saveAs(blob, opts.filename || 'image.svg')
       },
     }))

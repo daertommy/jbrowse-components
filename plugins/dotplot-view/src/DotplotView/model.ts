@@ -10,7 +10,6 @@ import {
   Instance,
   SnapshotIn,
 } from 'mobx-state-tree'
-import { saveAs } from 'file-saver'
 import { autorun, transaction } from 'mobx'
 
 import { getParentRenderProps } from '@jbrowse/core/util/tracks'
@@ -552,6 +551,7 @@ export default function stateModelFactory(pm: PluginManager) {
         const { renderToSvg } = await import('./svgcomponents/SVGDotplotView')
         const html = await renderToSvg(self as DotplotViewModel, opts)
         const blob = new Blob([html], { type: 'image/svg+xml' })
+        const { saveAs } = await import('file-saver')
         saveAs(blob, opts.filename || 'image.svg')
       },
       // if any of our assemblies are temporary assemblies

@@ -5,13 +5,23 @@ import {
 import { types } from 'mobx-state-tree'
 import { BaseLinearDisplay } from '@jbrowse/plugin-linear-genome-view'
 
+/**
+ * #stateModel LinearLollipopDisplay
+ * extends BaseLinearDisplay
+ */
 export function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
   return types
     .compose(
       'LinearLollipopDisplay',
       BaseLinearDisplay,
       types.model({
+        /**
+         * #property
+         */
         type: types.literal('LinearLollipopDisplay'),
+        /**
+         * #property
+         */
         configuration: ConfigurationReference(configSchema),
       }),
     )
@@ -19,12 +29,21 @@ export function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
     .views(self => {
       const { renderProps: superRenderProps } = self
       return {
+        /**
+         * #getter
+         */
         get blockType() {
           return 'dynamicBlocks'
         },
+        /**
+         * #getter
+         */
         get renderDelay() {
           return 500
         },
+        /**
+         * #method
+         */
         renderProps() {
           return {
             ...superRenderProps(),
@@ -32,6 +51,9 @@ export function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
             config: self.configuration.renderer,
           }
         },
+        /**
+         * #getter
+         */
         get rendererTypeName() {
           return self.configuration.renderer.type
         },

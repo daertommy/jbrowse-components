@@ -10,7 +10,6 @@ import {
   Instance,
   IAnyType,
 } from 'mobx-state-tree'
-import { saveAs } from 'file-saver'
 import { autorun } from 'mobx'
 import assemblyConfigSchemaFactory from '@jbrowse/core/assemblyManager/assemblyConfigSchema'
 import PluginManager from '@jbrowse/core/PluginManager'
@@ -210,11 +209,12 @@ export default function RootModel({
             {
               label: 'Export session',
               icon: GetAppIcon,
-              onClick: (session: IAnyStateTreeNode) => {
+              onClick: async (session: IAnyStateTreeNode) => {
                 const sessionBlob = new Blob(
                   [JSON.stringify({ session: getSnapshot(session) }, null, 2)],
                   { type: 'text/plain;charset=utf-8' },
                 )
+                const { saveAs } = await import('file-saver')
                 saveAs(sessionBlob, 'session.json')
               },
             },
