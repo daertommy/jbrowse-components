@@ -245,7 +245,7 @@ const GetSequenceDialog = observer(function ({
         </Button>
         <Button
           onClick={async () => {
-            const { saveAs } = await import('file-saver')
+            const { saveAs } = await import('file-saver').then(d => d.default)
             saveAs(
               new Blob([sequence || ''], {
                 type: 'text/x-fasta;charset=utf-8',

@@ -45,11 +45,11 @@ export function useSideScroll(model: LGV) {
     }
 
     if (mouseDragging) {
-      window.addEventListener('mousemove', globalMouseMove, true)
-      window.addEventListener('mouseup', globalMouseUp, true)
+      window.addEventListener('mousemove', globalMouseMove, { passive: true })
+      window.addEventListener('mouseup', globalMouseUp, { passive: true })
       cleanup = () => {
-        window.removeEventListener('mousemove', globalMouseMove, true)
-        window.removeEventListener('mouseup', globalMouseUp, true)
+        window.removeEventListener('mousemove', globalMouseMove)
+        window.removeEventListener('mouseup', globalMouseUp)
       }
     }
     return cleanup
@@ -140,8 +140,8 @@ export function useRangeSelect(
       }
     }
     if (mouseDragging) {
-      window.addEventListener('mousemove', globalMouseMove)
-      window.addEventListener('mouseup', globalMouseUp)
+      window.addEventListener('mousemove', globalMouseMove, { passive: true })
+      window.addEventListener('mouseup', globalMouseUp, { passive: true })
       return () => {
         window.removeEventListener('mousemove', globalMouseMove)
         window.removeEventListener('mouseup', globalMouseUp)
@@ -296,7 +296,7 @@ export function useWheelScroll(
       }
     }
     if (curr) {
-      curr.addEventListener('wheel', onWheel)
+      curr.addEventListener('wheel', onWheel, { passive: true })
       return () => {
         curr.removeEventListener('wheel', onWheel)
       }

@@ -48,7 +48,7 @@ export async function downloadBookmarkFile(
   fileFormat: string,
   model: GridBookmarkModel,
 ) {
-  const { saveAs } = await import('file-saver')
+  const { saveAs } = await import('file-saver').then(d => d.default)
   const { selectedBookmarks, bookmarksWithValidAssemblies } = model
   const bookmarksToDownload =
     selectedBookmarks.length === 0

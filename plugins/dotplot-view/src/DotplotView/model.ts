@@ -551,7 +551,7 @@ export default function stateModelFactory(pm: PluginManager) {
         const { renderToSvg } = await import('./svgcomponents/SVGDotplotView')
         const html = await renderToSvg(self as DotplotViewModel, opts)
         const blob = new Blob([html], { type: 'image/svg+xml' })
-        const { saveAs } = await import('file-saver')
+        const { saveAs } = await import('file-saver').then(d => d.default)
         saveAs(blob, opts.filename || 'image.svg')
       },
       // if any of our assemblies are temporary assemblies

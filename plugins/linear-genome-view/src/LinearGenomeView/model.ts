@@ -941,7 +941,7 @@ export function stateModelFactory(pluginManager: PluginManager) {
         )
         const html = await renderToSvg(self as LinearGenomeViewModel, opts)
         const blob = new Blob([html], { type: 'image/svg+xml' })
-        const { saveAs } = await import('file-saver')
+        const { saveAs } = await import('file-saver').then(d => d.default)
         saveAs(blob, opts.filename || 'image.svg')
       },
     }))

@@ -396,7 +396,7 @@ export default function RootModel({
                   [JSON.stringify({ session: getSnapshot(session) }, null, 2)],
                   { type: 'text/plain;charset=utf-8' },
                 )
-                const { saveAs } = await import('file-saver')
+                const { saveAs } = await import('file-saver').then(d => d.default)
                 saveAs(sessionBlob, 'session.json')
               },
             },
