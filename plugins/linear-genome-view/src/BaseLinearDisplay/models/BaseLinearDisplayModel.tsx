@@ -50,7 +50,7 @@ export interface ExportSvgDisplayOptions extends ExportSvgOptions {
 /**
  * #stateModel BaseLinearDisplay
  * #category display
- * extends `BaseDisplay`
+ * extends BaseDisplay,TrackHeightMixin,FeatureDensityMixin
  */
 function stateModelFactory() {
   return types

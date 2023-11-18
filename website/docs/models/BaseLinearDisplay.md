@@ -12,7 +12,7 @@ info
 
 [plugins/linear-genome-view/src/BaseLinearDisplay/models/BaseLinearDisplayModel.tsx](https://github.com/GMOD/jbrowse-components/blob/main/plugins/linear-genome-view/src/BaseLinearDisplay/models/BaseLinearDisplayModel.tsx)
 
-extends `BaseDisplay`
+extends BaseDisplay,TrackHeightMixin,FeatureDensityMixin
 
 ### BaseLinearDisplay - Properties
 

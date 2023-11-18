@@ -7,7 +7,7 @@ import { types } from 'mobx-state-tree'
  */
 export default function sharedWiggleConfigFactory() {
   return ConfigurationSchema(
-    'MultiLinearWiggleDisplay',
+    'SharedWiggleDisplay',
     {
       /**
        * #slot
