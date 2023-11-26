@@ -1,4 +1,4 @@
-import { getContainingView, getSession } from '@jbrowse/core/util'
+import { Feature, getContainingView, getSession } from '@jbrowse/core/util'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 
 import { LinearPileupDisplayModel } from './model'
@@ -24,21 +24,12 @@ export function drawFeats(
     return
   }
 
-  const featureHeight = 5
-  for (const feature of self.featureData) {
-    const s = feature.get('start')
-    const e = feature.get('end')
-    const refName = feature.get('refName')
-    const effectiveStrand = feature.get('strand')
-    const rs = view.bpToPx({ refName, coord: s })?.offsetPx
-    const re = view.bpToPx({ refName, coord: e })?.offsetPx
-    if (rs !== undefined && re !== undefined) {
-      const w = Math.max(re - rs, 2)
-      const l = rs - view.offsetPx
-      const c = effectiveStrand === -1 ? 'color_rev_strand' : 'color_fwd_strand'
-      const top = Math.random() * 100
-      strokeRectCtx(l, top, w, featureHeight, ctx, strokeColor[c])
-      fillRectCtx(l, top, w, featureHeight, ctx, fillColor[c])
-    }
+  for (const [key, val] of self.layout.getRectangles().entries()) {
+    const [l, top, r, bottom] = val
+    const w = r - l
+    const featureHeight = bottom - top
+
+    strokeRectCtx(l - view.offsetPx, top, w, featureHeight - 1, ctx, 'grey')
+    fillRectCtx(l - view.offsetPx, top, w, featureHeight - 1, ctx, 'grey')
   }
 }

@@ -7,10 +7,12 @@ import RpcMethodType from '../../pluggableElementTypes/RpcMethodType'
 import { RenderArgs } from './util'
 import { RemoteAbortSignal } from '../remoteAbortSignals'
 import { isFeatureAdapter } from '../../data_adapters/BaseAdapter'
-import { renameRegionsIfNeeded, Region } from '../../util'
-import SimpleFeature, {
+import {
+  renameRegionsIfNeeded,
+  Region,
+  SimpleFeature,
   SimpleFeatureSerialized,
-} from '../../util/simpleFeature'
+} from '../../util'
 
 export default class CoreGetFeatures extends RpcMethodType {
   name = 'CoreGetFeatures'

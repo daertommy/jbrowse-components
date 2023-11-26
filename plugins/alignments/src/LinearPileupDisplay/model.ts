@@ -21,6 +21,8 @@ import SortIcon from '@mui/icons-material/Sort'
 
 // locals
 import { SharedLinearPileupDisplayMixin } from '../SharedLinearPileupDisplay/model'
+import { GranularRectLayout } from '@jbrowse/core/util/layouts'
+import { autorun } from 'mobx'
 
 // async
 const SortByTagDialog = lazy(() => import('./components/SortByTagDialog'))
@@ -73,6 +75,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
       sortReady: false,
       currSortBpPerPx: 0,
       loading: false,
+      layout: new GranularRectLayout(),
       featureData: undefined as Feature[] | undefined,
       lastDrawnOffsetPx: undefined as number | undefined,
       lastDrawnBpPerPx: 0,
@@ -358,6 +361,21 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
             self.setError(e)
           }
         })()
+
+        autorun(() => {
+          self.featureData?.forEach(f => {
+
+            const view = getContainingView(self) as LGV
+            const s = f.get('start')
+            const e = f.get('end')
+            const refName = f.get('refName')
+            const rs = view.bpToPx({ refName, coord: s })?.offsetPx
+            const re = view.bpToPx({ refName, coord: e })?.offsetPx
+            if (rs !== undefined && re !== undefined) {
+              self.layout.addRect(f.id(), rs, re, 10, f)
+            }
+          })
+        })
       },
     }))
 }

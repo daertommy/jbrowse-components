@@ -1,6 +1,5 @@
 import {
   SimpleFeature,
-  SimpleFeatureSerialized,
   getContainingTrack,
   getContainingView,
   getSession,
@@ -28,8 +27,7 @@ export async function fetchFeatures(self: LinearPileupDisplayModel) {
     regions: view.staticBlocks.contentBlocks,
     filterBy: getSnapshot(self.filterBy),
     adapterConfig: self.adapterConfig,
-  })) as SimpleFeatureSerialized[]
-  self.setFeatures(ret.map(f => new SimpleFeature(f)))
-
+  })) as SimpleFeature[]
+  self.setFeatures(ret)
   self.setLoading(false)
 }
