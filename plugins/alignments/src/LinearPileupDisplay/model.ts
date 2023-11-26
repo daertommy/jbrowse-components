@@ -30,7 +30,7 @@ type LGV = LinearGenomeViewModel
 /**
  * #stateModel LinearPileupDisplay
  * #category display
- * extends `BaseLinearDisplay`
+ * extends `SharedLinearPileupDisplayMixin`
  */
 function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
   return types
@@ -183,6 +183,9 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
     })
 
     .views(self => ({
+      /**
+       * #getter
+       */
       get drawn() {
         return self.lastDrawnOffsetPx !== undefined
       },
@@ -222,7 +225,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
           return readConfObject(self.rendererConfig, 'mismatchAlpha')
         },
         /**
-         * #getter
+         * #method
          */
         renderReady() {
           const view = getContainingView(self) as LGV
