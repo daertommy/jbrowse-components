@@ -33,8 +33,10 @@ import { ColorByModel, ExtraColorBy } from '../shared/color'
 import { BaseDisplay } from '@jbrowse/core/pluggableElementTypes'
 
 // async
-const FilterByTagDialog = lazy(() => import('../shared/FilterByTagDialog'))
 const ColorByTagDialog = lazy(() => import('./components/ColorByTagDialog'))
+const FilterByTagDialog = lazy(
+  () => import('../shared/components/FilterByTagDialog'),
+)
 const SetFeatureHeightDialog = lazy(
   () => import('./components/SetFeatureHeightDialog'),
 )

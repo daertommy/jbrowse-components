@@ -6,7 +6,17 @@ import { IAnyStateTreeNode } from 'mobx-state-tree'
 
 type LGV = LinearGenomeViewModel
 
-export function doAfterAttach<T extends IAnyStateTreeNode>(
+export function fetchFeaturesAutorun<T extends IAnyStateTreeNode>(self: T) {
+  createAutorun(
+    self,
+    async () => {
+      await fetchChains(self)
+    },
+    { delay: 1000 },
+  )
+}
+
+export function drawAutorun<T extends IAnyStateTreeNode>(
   self: T,
   cb: (
     self: T,
@@ -15,14 +25,6 @@ export function doAfterAttach<T extends IAnyStateTreeNode>(
     height: number,
   ) => void,
 ) {
-  createAutorun(
-    self,
-    async () => {
-      await fetchChains(self)
-    },
-    { delay: 1000 },
-  )
-
   function draw(view: LGV) {
     const canvas = self.ref
     if (!canvas) {

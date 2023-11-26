@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import { Dialog } from '@jbrowse/core/ui'
 import { makeStyles } from 'tss-react/mui'
-import { IFilter } from '.'
+import { IFilter } from '..'
 
 const useStyles = makeStyles()(theme => ({
   paper: {

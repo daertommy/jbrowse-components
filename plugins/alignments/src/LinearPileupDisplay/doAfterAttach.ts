@@ -1,13 +1,13 @@
-import { getConf } from '@jbrowse/core/configuration'
 import { getRpcSessionId } from '@jbrowse/core/util/tracks'
 import { getSession, getContainingView } from '@jbrowse/core/util'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 
 // locals
-import { getUniqueModificationValues } from '../shared'
 import { createAutorun } from '../util'
 import { LinearPileupDisplayModel } from './model'
 import { fetchFeatures } from './fetchFeatures'
+import { drawAutorun } from '../shared/autoruns'
+import { drawFeats } from './drawFeats'
 
 type LGV = LinearGenomeViewModel
 
@@ -19,6 +19,9 @@ export function doAfterAttach(self: LinearPileupDisplayModel) {
     },
     { delay: 1000 },
   )
+
+  drawAutorun(self, drawFeats)
+
   createAutorun(
     self,
     async () => {
@@ -73,22 +76,22 @@ export function doAfterAttach(self: LinearPileupDisplayModel) {
     { delay: 1000 },
   )
 
-  createAutorun(self, async () => {
-    if (!self.autorunReady) {
-      return
-    }
-    const { parentTrack, colorBy } = self
-    const { staticBlocks } = getContainingView(self) as LGV
-    if (colorBy?.type === 'modifications') {
-      const adapter = getConf(parentTrack, ['adapter'])
-      const vals = await getUniqueModificationValues(
-        self,
-        adapter,
-        colorBy,
-        staticBlocks,
-      )
-      self.updateModificationColorMap(vals)
-    }
-    self.setModificationsReady(true)
-  })
+  // createAutorun(self, async () => {
+  //   if (!self.autorunReady) {
+  //     return
+  //   }
+  //   const { parentTrack, colorBy } = self
+  //   const { staticBlocks } = getContainingView(self) as LGV
+  //   if (colorBy?.type === 'modifications') {
+  //     const adapter = getConf(parentTrack, ['adapter'])
+  //     const vals = await getUniqueModificationValues(
+  //       self,
+  //       adapter,
+  //       colorBy,
+  //       staticBlocks,
+  //     )
+  //     self.updateModificationColorMap(vals)
+  //   }
+  //   self.setModificationsReady(true)
+  // })
 }

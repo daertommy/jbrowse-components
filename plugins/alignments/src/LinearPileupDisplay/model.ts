@@ -13,7 +13,6 @@ import {
   Feature,
 } from '@jbrowse/core/util'
 
-import { randomColor, modificationColors } from '../util'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 
 // icons
@@ -22,13 +21,9 @@ import SortIcon from '@mui/icons-material/Sort'
 
 // locals
 import { SharedLinearPileupDisplayMixin } from '../SharedLinearPileupDisplay/model'
-import { observable } from 'mobx'
 
 // async
 const SortByTagDialog = lazy(() => import('./components/SortByTagDialog'))
-const ModificationsDialog = lazy(
-  () => import('./components/ColorByModificationsDialog'),
-)
 
 type LGV = LinearGenomeViewModel
 
@@ -79,10 +74,19 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
       currSortBpPerPx: 0,
       loading: false,
       selfFeatures: undefined as Feature[] | undefined,
-      modificationTagMap: observable.map<string, string>({}),
-      modificationsReady: false,
+      lastDrawnOffsetPx: undefined as number | undefined,
+      lastDrawnBpPerPx: 0,
+      ref: null as HTMLCanvasElement | null,
     }))
     .actions(self => ({
+      /**
+       * #action
+       * internal, a reference to a HTMLCanvas because we use a autorun to draw
+       * the canvas
+       */
+      setRef(ref: HTMLCanvasElement | null) {
+        self.ref = ref
+      },
       /**
        * #action
        */
@@ -101,25 +105,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
       setCurrSortBpPerPx(n: number) {
         self.currSortBpPerPx = n
       },
-      /**
-       * #action
-       */
-      updateModificationColorMap(uniqueModifications: string[]) {
-        uniqueModifications.forEach(value => {
-          if (!self.modificationTagMap.has(value)) {
-            self.modificationTagMap.set(
-              value,
-              modificationColors[value] || randomColor(),
-            )
-          }
-        })
-      },
-      /**
-       * #action
-       */
-      setModificationsReady(flag: boolean) {
-        self.modificationsReady = flag
-      },
+
       /**
        * #action
        */
@@ -185,6 +171,9 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
     })
 
     .views(self => ({
+      get drawn() {
+        return self.lastDrawnOffsetPx !== undefined
+      },
       /**
        * #getter
        */
@@ -225,11 +214,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
          */
         renderReady() {
           const view = getContainingView(self) as LGV
-          return (
-            self.modificationsReady &&
-            self.currSortBpPerPx === view.bpPerPx &&
-            superRenderReady()
-          )
+          return self.currSortBpPerPx === view.bpPerPx && superRenderReady()
         },
       }
     })
@@ -246,13 +231,12 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
          * #method
          */
         renderPropsPre() {
-          const { sortedBy, showSoftClipping, modificationTagMap } = self
+          const { sortedBy, showSoftClipping } = self
           const superProps = superRenderPropsPre()
           return {
             ...superProps,
             showSoftClip: showSoftClipping,
             sortedBy,
-            modificationTagMap: Object.fromEntries(modificationTagMap.toJSON()),
           }
         },
         /**
@@ -321,15 +305,15 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
                   onClick: () =>
                     self.setColorScheme({ type: 'pairOrientation' }),
                 },
-                {
-                  label: 'Modifications or methylation',
-                  onClick: () => {
-                    getSession(self).queueDialog(doneCallback => [
-                      ModificationsDialog,
-                      { model: self, handleClose: doneCallback },
-                    ])
-                  },
-                },
+                // {
+                //   label: 'Modifications or methylation',
+                //   onClick: () => {
+                //     getSession(self).queueDialog(doneCallback => [
+                //       ModificationsDialog,
+                //       { model: self, handleClose: doneCallback },
+                //     ])
+                //   },
+                // },
                 {
                   label: 'Insert size',
                   onClick: () => self.setColorScheme({ type: 'insertSize' }),

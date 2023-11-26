@@ -4,23 +4,21 @@ import { getContainingView } from '@jbrowse/core/util'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 
 // local
-import { LinearReadArcsDisplayModel } from '../model'
+import { LinearPileupDisplayModel } from '../model'
 import BaseDisplayComponent from '../../shared/components/BaseDisplayComponent'
 
 type LGV = LinearGenomeViewModel
 
-const Arcs = observer(function ({
+const Cloud = observer(function ({
   model,
 }: {
-  model: LinearReadArcsDisplayModel
+  model: LinearPileupDisplayModel
 }) {
   const view = getContainingView(model) as LGV
   const width = Math.round(view.dynamicBlocks.totalWidthPx)
   const height = model.height
   const cb = useCallback(
-    (ref: HTMLCanvasElement) => {
-      model.setRef(ref)
-    },
+    (ref: HTMLCanvasElement) => model.setRef(ref),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [model, width, height],
   )
@@ -28,7 +26,7 @@ const Arcs = observer(function ({
   // note: the position absolute below avoids scrollbar from appearing on track
   return (
     <canvas
-      data-testid="arc-canvas"
+      data-testid="cloud-canvas"
       ref={cb}
       style={{ width, height, position: 'absolute' }}
       width={width * 2}
@@ -37,16 +35,15 @@ const Arcs = observer(function ({
   )
 })
 
-const LinearReadArcsReactComponent = observer(function ({
+const LinearReadCloudReactComponent = observer(function ({
   model,
 }: {
-  model: LinearReadArcsDisplayModel
+  model: LinearPileupDisplayModel
 }) {
   return (
     <BaseDisplayComponent model={model}>
-      <Arcs model={model} />
+      <Cloud model={model} />
     </BaseDisplayComponent>
   )
 })
-
-export default LinearReadArcsReactComponent
+export default LinearReadCloudReactComponent

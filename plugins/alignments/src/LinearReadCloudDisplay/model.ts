@@ -20,7 +20,9 @@ import { FilterModel, IFilter } from '../shared'
 import { ChainData } from '../shared/fetchChains'
 
 // async
-const FilterByTagDialog = lazy(() => import('../shared/FilterByTagDialog'))
+const FilterByTagDialog = lazy(
+  () => import('../shared/components/FilterByTagDialog'),
+)
 
 /**
  * #stateModel LinearReadCloudDisplay
@@ -218,9 +220,12 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         ;(async () => {
           try {
-            const { doAfterAttach } = await import('../shared/afterAttach')
+            const { drawAutorun, fetchFeaturesAutorun } = await import(
+              '../shared/autoruns'
+            )
             const { drawFeats } = await import('./drawFeats')
-            doAfterAttach(self, drawFeats)
+            drawAutorun(self, drawFeats)
+            fetchFeaturesAutorun(self)
           } catch (e) {
             console.error(e)
             self.setError(e)

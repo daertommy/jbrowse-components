@@ -4,13 +4,14 @@ import {
   BlockMsg,
   LinearGenomeViewModel,
 } from '@jbrowse/plugin-linear-genome-view'
+import { getContainingView } from '@jbrowse/core/util'
 import { makeStyles } from 'tss-react/mui'
 import { observer } from 'mobx-react'
 
 // local
-import { LinearReadCloudDisplayModel } from '../LinearReadCloudDisplay/model'
-import { LinearReadArcsDisplayModel } from '../LinearReadArcsDisplay/model'
-import { getContainingView } from '@jbrowse/core/util'
+import { LinearReadCloudDisplayModel } from '../../LinearReadCloudDisplay/model'
+import { LinearReadArcsDisplayModel } from '../../LinearReadArcsDisplay/model'
+import { LinearPileupDisplayModel } from '../../LinearPileupDisplay/model'
 
 const useStyles = makeStyles()(theme => ({
   loading: {
@@ -26,11 +27,16 @@ const useStyles = makeStyles()(theme => ({
   },
 }))
 
+type AnyLinearAlignmentsDisplay =
+  | LinearReadArcsDisplayModel
+  | LinearReadCloudDisplayModel
+  | LinearPileupDisplayModel
+
 const BaseDisplayComponent = observer(function ({
   model,
   children,
 }: {
-  model: LinearReadArcsDisplayModel | LinearReadCloudDisplayModel
+  model: AnyLinearAlignmentsDisplay
   children?: React.ReactNode
 }) {
   const { error, regionTooLarge } = model
@@ -52,7 +58,7 @@ const DataDisplay = observer(function ({
   model,
   children,
 }: {
-  model: LinearReadArcsDisplayModel | LinearReadCloudDisplayModel
+  model: AnyLinearAlignmentsDisplay
   children?: React.ReactNode
 }) {
   const { drawn, loading } = model
@@ -71,7 +77,7 @@ const DataDisplay = observer(function ({
 const LoadingBar = observer(function ({
   model,
 }: {
-  model: LinearReadArcsDisplayModel | LinearReadCloudDisplayModel
+  model: AnyLinearAlignmentsDisplay
 }) {
   const { classes } = useStyles()
   const { message } = model

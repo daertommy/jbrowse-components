@@ -1,3 +1,4 @@
+import { lazy } from 'react'
 import configSchemaFactory from './configSchema'
 import modelFactory from './model'
 import DisplayType from '@jbrowse/core/pluggableElementTypes/DisplayType'
@@ -17,9 +18,7 @@ export default function register(pluginManager: PluginManager) {
       },
       trackType: 'AlignmentsTrack',
       viewType: 'LinearGenomeView',
-      ReactComponent: () => {
-        return 'hello'
-      },
+      ReactComponent: lazy(() => import('./components/ReactComponent')),
     })
   })
 }
