@@ -363,9 +363,12 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
         })()
 
         autorun(() => {
-          self.featureData?.forEach(f => {
+          const view = getContainingView(self) as LGV
+          if (self.lastDrawnBpPerPx !== view.bpPerPx) {
+            self.layout = new GranularRectLayout({ pitchX: 1 })
+          }
 
-            const view = getContainingView(self) as LGV
+          self.featureData?.forEach(f => {
             const s = f.get('start')
             const e = f.get('end')
             const refName = f.get('refName')

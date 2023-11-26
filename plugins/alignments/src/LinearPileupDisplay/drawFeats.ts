@@ -26,7 +26,7 @@ export function drawFeats(
 
   for (const [key, val] of self.layout.getRectangles().entries()) {
     const [l, top, r, bottom] = val
-    const w = r - l
+    const w = r - l - 1
     const featureHeight = bottom - top
 
     strokeRectCtx(l - view.offsetPx, top, w, featureHeight - 1, ctx, 'grey')
