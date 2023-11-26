@@ -12,7 +12,10 @@ const BgzipFastaAdapter = ConfigurationSchema(
      */
     fastaLocation: {
       type: 'fileLocation',
-      defaultValue: { uri: '/path/to/seq.fa.gz', locationType: 'UriLocation' },
+      defaultValue: {
+        uri: '/path/to/seq.fa.gz',
+        locationType: 'UriLocation',
+      },
     },
     /**
      * #slot

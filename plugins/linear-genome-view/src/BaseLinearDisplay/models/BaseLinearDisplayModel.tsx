@@ -50,7 +50,7 @@ export interface ExportSvgDisplayOptions extends ExportSvgOptions {
 /**
  * #stateModel BaseLinearDisplay
  * #category display
- * extends `BaseDisplay`
+ * extends `BaseDisplay`, `TrackHeightMixin`, `FeatureDensityMixin`
  */
 function stateModelFactory() {
   return types
@@ -96,8 +96,8 @@ function stateModelFactory() {
     .views(self => ({
       /**
        * #getter
-       * how many milliseconds to wait for the display to
-       * "settle" before re-rendering a block
+       * how many milliseconds to wait for the display to "settle" before
+       * re-rendering a block
        */
       get renderDelay() {
         return 50
@@ -112,8 +112,8 @@ function stateModelFactory() {
 
       /**
        * #getter
-       * returns a string feature ID if the globally-selected object
-       * is probably a feature
+       * returns a string feature ID if the globally-selected object is
+       * probably a feature
        */
       get selectedFeatureId() {
         if (isAlive(self)) {
@@ -137,8 +137,8 @@ function stateModelFactory() {
     .views(self => ({
       /**
        * #getter
-       * a CompositeMap of `featureId -> feature obj` that
-       * just looks in all the block data for that feature
+       * a CompositeMap of `featureId -> feature obj` that just looks in all
+       * the block data for that feature
        */
       get features() {
         const featureMaps = []
@@ -159,7 +159,7 @@ function stateModelFactory() {
       },
 
       /**
-       * #getter
+       * #method
        */
       getFeatureOverlapping(
         blockKey: string,
@@ -170,14 +170,14 @@ function stateModelFactory() {
       },
 
       /**
-       * #getter
+       * #method
        */
       getFeatureByID(blockKey: string, id: string): LayoutRecord | undefined {
         return self.blockState.get(blockKey)?.layout?.getByID(id)
       },
 
       /**
-       * #getter
+       * #method
        */
       searchFeatureByID(id: string): LayoutRecord | undefined {
         let ret

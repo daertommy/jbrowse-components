@@ -7,10 +7,18 @@ import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 import { getUniqueModificationValues } from '../shared'
 import { createAutorun } from '../util'
 import { LinearPileupDisplayModel } from './model'
+import { fetchFeatures } from './fetchFeatures'
 
 type LGV = LinearGenomeViewModel
 
 export function doAfterAttach(self: LinearPileupDisplayModel) {
+  createAutorun(
+    self,
+    async () => {
+      await fetchFeatures(self)
+    },
+    { delay: 1000 },
+  )
   createAutorun(
     self,
     async () => {

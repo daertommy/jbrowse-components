@@ -6,7 +6,12 @@ import {
   readConfObject,
   getConf,
 } from '@jbrowse/core/configuration'
-import { getEnv, getSession, getContainingView } from '@jbrowse/core/util'
+import {
+  getEnv,
+  getSession,
+  getContainingView,
+  Feature,
+} from '@jbrowse/core/util'
 
 import { randomColor, modificationColors } from '../util'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
@@ -72,10 +77,24 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
     .volatile(() => ({
       sortReady: false,
       currSortBpPerPx: 0,
+      loading: false,
+      selfFeatures: {} as Record<string, Feature[]>,
       modificationTagMap: observable.map<string, string>({}),
       modificationsReady: false,
     }))
     .actions(self => ({
+      /**
+       * #action
+       */
+      setFeatures(blockKey: string, f: Feature[]) {
+        self.selfFeatures[blockKey] = f
+      },
+      /**
+       * #action
+       */
+      setLoading(f: boolean) {
+        self.loading = f
+      },
       /**
        * #action
        */
