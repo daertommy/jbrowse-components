@@ -6,11 +6,9 @@ import {
   readConfObject,
   getConf,
 } from '@jbrowse/core/configuration'
-import { getRpcSessionId } from '@jbrowse/core/util/tracks'
 import { getEnv, getSession, getContainingView } from '@jbrowse/core/util'
-import { getUniqueModificationValues } from '../shared'
 
-import { createAutorun, randomColor, modificationColors } from '../util'
+import { randomColor, modificationColors } from '../util'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 
 // icons
@@ -330,81 +328,16 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
     })
     .actions(self => ({
       afterAttach() {
-        createAutorun(
-          self,
-          async () => {
-            const view = getContainingView(self) as LGV
-            if (!self.autorunReady) {
-              return
-            }
-
-            const { bpPerPx } = view
-
-            self.setCurrSortBpPerPx(bpPerPx)
-          },
-          { delay: 1000 },
-        )
-        createAutorun(
-          self,
-          async () => {
-            const { rpcManager } = getSession(self)
-            const view = getContainingView(self) as LGV
-            if (!self.autorunReady) {
-              return
-            }
-
-            const { sortedBy, adapterConfig, rendererType, sortReady } = self
-            const { bpPerPx } = view
-
-            if (
-              sortedBy &&
-              (!sortReady || self.currSortBpPerPx === view.bpPerPx)
-            ) {
-              const { pos, refName, assemblyName } = sortedBy
-              // render just the sorted region first
-              // @ts-expect-error
-              await self.rendererType.renderInClient(rpcManager, {
-                assemblyName,
-                regions: [
-                  {
-                    start: pos,
-                    end: pos + 1,
-                    refName,
-                    assemblyName,
-                  },
-                ],
-                adapterConfig,
-                rendererType: rendererType.name,
-                sessionId: getRpcSessionId(self),
-                layoutId: view.id,
-                timeout: 1_000_000,
-                ...self.renderPropsPre(),
-              })
-            }
-            self.setCurrSortBpPerPx(bpPerPx)
-            self.setSortReady(true)
-          },
-          { delay: 1000 },
-        )
-
-        createAutorun(self, async () => {
-          if (!self.autorunReady) {
-            return
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        ;(async () => {
+          try {
+            const { doAfterAttach } = await import('./doAfterAttach')
+            doAfterAttach(self)
+          } catch (e) {
+            console.error(e)
+            self.setError(e)
           }
-          const { parentTrack, colorBy } = self
-          const { staticBlocks } = getContainingView(self) as LGV
-          if (colorBy?.type === 'modifications') {
-            const adapter = getConf(parentTrack, ['adapter'])
-            const vals = await getUniqueModificationValues(
-              self,
-              adapter,
-              colorBy,
-              staticBlocks,
-            )
-            self.updateModificationColorMap(vals)
-          }
-          self.setModificationsReady(true)
-        })
+        })()
       },
     }))
 }

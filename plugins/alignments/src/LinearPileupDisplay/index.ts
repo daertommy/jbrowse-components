@@ -12,7 +12,10 @@ export default function register(pluginManager: PluginManager) {
       displayName: 'Pileup display',
       configSchema,
       stateModel: modelFactory(configSchema),
-      subDisplay: { type: 'LinearAlignmentsDisplay', lowerPanel: true },
+      subDisplay: {
+        type: 'LinearAlignmentsDisplay',
+        lowerPanel: true,
+      },
       trackType: 'AlignmentsTrack',
       viewType: 'LinearGenomeView',
       ReactComponent: BaseLinearDisplayComponent,

@@ -1,6 +1,6 @@
 import { lazy } from 'react'
-import { autorun, observable } from 'mobx'
-import { cast, types, addDisposer, getSnapshot } from 'mobx-state-tree'
+import { observable } from 'mobx'
+import { cast, types, getSnapshot, Instance } from 'mobx-state-tree'
 import copy from 'copy-to-clipboard'
 import {
   AnyConfigurationModel,
@@ -32,9 +32,8 @@ import FilterListIcon from '@mui/icons-material/ClearAll'
 
 // locals
 import LinearPileupDisplayBlurb from './components/LinearPileupDisplayBlurb'
-import { getUniqueTagValues, FilterModel, IFilter } from '../shared'
+import { FilterModel, IFilter } from '../shared'
 import { SimpleFeatureSerialized } from '@jbrowse/core/util/simpleFeature'
-import { createAutorun } from '../util'
 import { ColorByModel, ExtraColorBy } from '../shared/color'
 
 // async
@@ -464,9 +463,9 @@ export function SharedLinearPileupDisplayMixin(
             {
               label: 'Color by tag...',
               onClick: () => {
-                getSession(self).queueDialog(doneCallback => [
+                getSession(self).queueDialog(handleClose => [
                   ColorByTagDlg,
-                  { model: self, handleClose: doneCallback },
+                  { model: self, handleClose },
                 ])
               },
             },
@@ -483,9 +482,9 @@ export function SharedLinearPileupDisplayMixin(
               label: 'Filter by',
               icon: FilterListIcon,
               onClick: () => {
-                getSession(self).queueDialog(doneCallback => [
+                getSession(self).queueDialog(handleClose => [
                   FilterByTagDlg,
-                  { model: self, handleClose: doneCallback },
+                  { model: self, handleClose },
                 ])
               },
             },
@@ -509,9 +508,9 @@ export function SharedLinearPileupDisplayMixin(
                 {
                   label: 'Manually set height',
                   onClick: () => {
-                    getSession(self).queueDialog(doneCallback => [
+                    getSession(self).queueDialog(handleClose => [
                       SetFeatureHeightDlg,
-                      { model: self, handleClose: doneCallback },
+                      { model: self, handleClose },
                     ])
                   },
                 },
@@ -520,9 +519,9 @@ export function SharedLinearPileupDisplayMixin(
             {
               label: 'Set max height...',
               onClick: () => {
-                getSession(self).queueDialog(doneCallback => [
+                getSession(self).queueDialog(handleClose => [
                   SetMaxHeightDlg,
-                  { model: self, handleClose: doneCallback },
+                  { model: self, handleClose },
                 ])
               },
             },
@@ -537,66 +536,24 @@ export function SharedLinearPileupDisplayMixin(
     }))
     .actions(self => ({
       afterAttach() {
-        createAutorun(
-          self,
-          async () => {
-            const view = getContainingView(self) as LGV
-            if (!self.autorunReady) {
-              return
-            }
-
-            const { colorBy, tagsReady } = self
-            const { staticBlocks } = view
-            if (colorBy?.tag && !tagsReady) {
-              const vals = await getUniqueTagValues(self, colorBy, staticBlocks)
-              self.updateColorTagMap(vals)
-            }
-            self.setTagsReady(true)
-          },
-          { delay: 1000 },
-        )
-
-        // autorun synchronizes featureUnderMouse with featureIdUnderMouse
-        // asynchronously. this is needed due to how we do not serialize all
-        // features from the BAM/CRAM over the rpc
-        addDisposer(
-          self,
-          autorun(async () => {
-            const session = getSession(self)
-            try {
-              const featureId = self.featureIdUnderMouse
-              if (self.featureUnderMouse?.id() !== featureId) {
-                if (!featureId) {
-                  self.setFeatureUnderMouse(undefined)
-                } else {
-                  const sessionId = getRpcSessionId(self)
-                  const view = getContainingView(self)
-                  const { feature } = (await session.rpcManager.call(
-                    sessionId,
-                    'CoreGetFeatureDetails',
-                    {
-                      featureId,
-                      sessionId,
-                      layoutId: view.id,
-                      rendererType: 'PileupRenderer',
-                    },
-                  )) as { feature: SimpleFeatureSerialized }
-
-                  // check featureIdUnderMouse is still the same as the
-                  // feature.id that was returned e.g. that the user hasn't
-                  // moused over to a new position during the async operation
-                  // above
-                  if (self.featureIdUnderMouse === feature?.uniqueId) {
-                    self.setFeatureUnderMouse(new SimpleFeature(feature))
-                  }
-                }
-              }
-            } catch (e) {
-              console.error(e)
-              session.notify(`${e}`, 'error')
-            }
-          }),
-        )
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        ;(async () => {
+          try {
+            const { doAfterAttachShared } = await import(
+              './doAfterAttachShared'
+            )
+            doAfterAttachShared(self)
+          } catch (e) {
+            console.error(e)
+            self.setError(e)
+          }
+        })()
       },
     }))
 }
+
+export type SharedLinearPileupDisplayStateModel = ReturnType<
+  typeof SharedLinearPileupDisplayMixin
+>
+export type SharedLinearPileupDisplayModel =
+  Instance<SharedLinearPileupDisplayStateModel>
