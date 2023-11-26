@@ -35,7 +35,7 @@ const Cloud = observer(function ({
   )
 })
 
-const LinearReadCloudReactComponent = observer(function ({
+const LinearPileupReactComponent = observer(function ({
   model,
 }: {
   model: LinearPileupDisplayModel
@@ -46,4 +46,4 @@ const LinearReadCloudReactComponent = observer(function ({
     </BaseDisplayComponent>
   )
 })
-export default LinearReadCloudReactComponent
+export default LinearPileupReactComponent

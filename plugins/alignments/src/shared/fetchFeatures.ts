@@ -26,19 +26,19 @@ export interface ReducedFeature {
   SA?: string
 }
 
-export interface ChainStats {
+export interface FeatureStats {
   max: number
   min: number
   upper: number
   lower: number
 }
 
-export interface ChainData {
+export interface FeatureData {
   chains: ReducedFeature[][]
-  stats?: ChainStats
+  stats?: FeatureStats
 }
 
-export async function fetchChains(
+export async function fetchFeatures(
   self: LinearReadArcsDisplayModel | LinearReadCloudDisplayModel,
 ) {
   // @ts-expect-error
@@ -56,8 +56,8 @@ export async function fetchChains(
     regions: view.staticBlocks.contentBlocks,
     filterBy: getSnapshot(self.filterBy),
     adapterConfig: self.adapterConfig,
-  })) as ChainData
+  })) as FeatureData
 
-  self.setChainData(ret)
+  self.setFeatureData(ret)
   self.setLoading(false)
 }

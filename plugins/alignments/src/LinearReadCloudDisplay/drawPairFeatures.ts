@@ -3,7 +3,11 @@ import { max, min } from '@jbrowse/core/util'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 import { Assembly } from '@jbrowse/core/assemblyManager/assembly'
 
-import { ChainData, ChainStats, ReducedFeature } from '../shared/fetchChains'
+import {
+  FeatureData,
+  FeatureStats,
+  ReducedFeature,
+} from '../shared/fetchFeatures'
 import { LinearReadCloudDisplayModel } from './model'
 import { fillRectCtx, strokeRectCtx } from './util'
 import {
@@ -12,7 +16,7 @@ import {
   getPairedOrientationColor,
 } from '../shared/color'
 
-interface ChainCoord {
+interface FeatureCoord {
   distance: number
   r1s: number
   r1e: number
@@ -22,23 +26,23 @@ interface ChainCoord {
   v1: ReducedFeature
 }
 
-export function drawPairChains({
+export function drawPairFeatures({
   ctx,
   self,
-  chainData,
+  featureData,
   view,
   asm,
 }: {
   ctx: CanvasRenderingContext2D
   self: LinearReadCloudDisplayModel
-  chainData: ChainData
+  featureData: FeatureData
   view: LinearGenomeViewModel
   asm: Assembly
 }) {
-  const coords: ChainCoord[] = []
+  const coords: FeatureCoord[] = []
   const featureHeight = getConf(self, 'featureHeight')
   const type = self.colorBy?.type || 'insertSizeAndOrientation'
-  const { chains, stats } = chainData
+  const { chains, stats } = featureData
 
   for (const chain of chains) {
     // if we're looking at a paired read (flag 1) then assume it is just
@@ -118,7 +122,7 @@ export function getPairedColor({
   type: string
   v0: ReducedFeature
   v1: ReducedFeature
-  stats?: ChainStats
+  stats?: FeatureStats
 }): readonly [string, string] | undefined {
   if (type === 'insertSizeAndOrientation') {
     return getPairedInsertSizeAndOrientationColor(v0, v1, stats)

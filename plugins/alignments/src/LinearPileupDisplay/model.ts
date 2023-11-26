@@ -73,12 +73,24 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
       sortReady: false,
       currSortBpPerPx: 0,
       loading: false,
-      selfFeatures: undefined as Feature[] | undefined,
+      featureData: undefined as Feature[] | undefined,
       lastDrawnOffsetPx: undefined as number | undefined,
       lastDrawnBpPerPx: 0,
       ref: null as HTMLCanvasElement | null,
     }))
     .actions(self => ({
+      /**
+       * #action
+       */
+      setLastDrawnOffsetPx(n: number) {
+        self.lastDrawnOffsetPx = n
+      },
+      /**
+       * #action
+       */
+      setLastDrawnBpPerPx(n: number) {
+        self.lastDrawnBpPerPx = n
+      },
       /**
        * #action
        * internal, a reference to a HTMLCanvas because we use a autorun to draw
@@ -91,7 +103,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
        * #action
        */
       setFeatures(f: Feature[]) {
-        self.selfFeatures = f
+        self.featureData = f
       },
       /**
        * #action

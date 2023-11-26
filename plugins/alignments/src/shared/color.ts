@@ -1,7 +1,7 @@
 import { types, Instance } from 'mobx-state-tree'
 
 import { orientationTypes, pairMap } from '../util'
-import { ChainStats } from './fetchChains'
+import { FeatureStats } from './fetchFeatures'
 
 export const fillColor = {
   color_fwd_strand_not_proper: '#ECC8C8',
@@ -52,7 +52,7 @@ export const strokeColor = {
 export function getPairedInsertSizeColor(
   f1: { refName: string; tlen?: number },
   f2: { refName: string },
-  stats?: ChainStats,
+  stats?: FeatureStats,
 ) {
   const sameRef = f1.refName === f2.refName
   const tlen = Math.abs(f1.tlen || 0)
@@ -69,7 +69,7 @@ export function getPairedInsertSizeColor(
 export function getPairedInsertSizeAndOrientationColor(
   f1: { refName: string; pair_orientation?: string; tlen?: number },
   f2: { refName: string },
-  stats?: ChainStats,
+  stats?: FeatureStats,
 ) {
   return (
     getPairedInsertSizeColor(f1, f2, stats) || getPairedOrientationColor(f1)

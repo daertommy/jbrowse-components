@@ -18,7 +18,7 @@ import FilterListIcon from '@mui/icons-material/ClearAll'
 
 // locals
 import { FilterModel, IFilter } from '../shared'
-import { ChainData } from '../shared/fetchChains'
+import { FeatureData } from '../shared/fetchFeatures'
 
 // async
 const FilterByTagDialog = lazy(
@@ -27,8 +27,7 @@ const FilterByTagDialog = lazy(
 
 /**
  * #stateModel LinearReadArcsDisplay
- * extends `BaseDisplay`, it is not a block based track, hence not
- * BaseLinearDisplay
+ * extends `BaseDisplay`, `TrackHeightMixin`, `FeatureDensityMixin`
  */
 function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
   return types
@@ -86,7 +85,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
     )
     .volatile(() => ({
       loading: false,
-      chainData: undefined as ChainData | undefined,
+      featureData: undefined as FeatureData | undefined,
       lastDrawnOffsetPx: undefined as number | undefined,
       lastDrawnBpPerPx: 0,
       ref: null as HTMLCanvasElement | null,
@@ -136,8 +135,8 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
       /**
        * #action
        */
-      setChainData(args: ChainData) {
-        self.chainData = args
+      setFeatureData(args: FeatureData) {
+        self.featureData = args
       },
 
       /**
@@ -213,7 +212,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
         renderProps() {
           return {
             ...superRenderProps(),
-            notReady: !self.chainData,
+            notReady: !self.featureData,
           }
         },
 

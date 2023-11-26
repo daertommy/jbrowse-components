@@ -4,8 +4,8 @@ import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 // locals
 import { LinearReadCloudDisplayModel } from './model'
 import { hasPairedReads } from '../shared/util'
-import { drawPairChains } from './drawPairChains'
-import { drawLongReadChains } from './drawLongReadChains'
+import { drawPairFeatures } from './drawPairFeatures'
+import { drawLongReadFeatures } from './drawLongReadFeatures'
 
 type LGV = LinearGenomeViewModel
 
@@ -13,8 +13,8 @@ export function drawFeats(
   self: LinearReadCloudDisplayModel,
   ctx: CanvasRenderingContext2D,
 ) {
-  const { chainData } = self
-  if (!chainData) {
+  const { featureData } = self
+  if (!featureData) {
     return
   }
   const { assemblyManager } = getSession(self)
@@ -25,11 +25,11 @@ export function drawFeats(
     return
   }
 
-  const hasPaired = hasPairedReads(chainData)
+  const hasPaired = hasPairedReads(featureData)
 
   if (hasPaired) {
-    drawPairChains({ self, view, asm, ctx, chainData })
+    drawPairFeatures({ self, view, asm, ctx, featureData })
   } else {
-    drawLongReadChains({ self, view, asm, ctx, chainData })
+    drawLongReadFeatures({ self, view, asm, ctx, featureData })
   }
 }

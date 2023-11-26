@@ -2625,7 +2625,7 @@
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/core@^3.0.4", "@oclif/core@^3.11.0":
+"@oclif/core@^3.0.4", "@oclif/core@^3.12.0":
   version "3.12.0"
   resolved "https://registry.yarnpkg.com/@oclif/core/-/core-3.12.0.tgz#4b38b1b5dab2f7585f89c3927a8a157b258b4bd6"
   integrity sha512-mT1Vpd1E20IJ7P6GDYOivylPdTHq/xVgFjeCDjitFW86UAklFM8BEFyFB7KpsTvpmjRbCoda3yU10lSI1224lw==
@@ -2675,11 +2675,11 @@
     fast-levenshtein "^3.0.0"
 
 "@oclif/plugin-warn-if-update-available@^3.0.0":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-3.0.3.tgz#0609096a5272ffc97124111453825a33e899ae6f"
-  integrity sha512-p9Ai5olqj52NTndtntFbVreRCtJg9dgnfAl5Zi6hmIpgzVtPYDxLwa3PnMufKFc3fUkno5xnJ0TsKfxt0QruDw==
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-3.0.4.tgz#644e80c3174f9dd10869c6d2ef6c4e35f3b6766f"
+  integrity sha512-IyEvsyJqwscLgA9QVec48YfNNuES8cN+H2mPSb86hpxPUPINaJeAL/0mOsRi+JSiCWK1dleRdRn98S8+IehvgA==
   dependencies:
-    "@oclif/core" "^3.11.0"
+    "@oclif/core" "^3.12.0"
     chalk "^5.3.0"
     debug "^4.1.0"
     http-call "^5.2.2"

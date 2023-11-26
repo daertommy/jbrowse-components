@@ -46,20 +46,20 @@ export function drawFeats(
   height: number,
 ) {
   const {
-    chainData,
+    featureData,
     colorBy,
     drawInter,
     drawLongRange,
     lineWidthSetting,
     jitterVal,
   } = self
-  if (!chainData) {
+  if (!featureData) {
     return
   }
   const view = getContainingView(self) as LGV
   const { assemblyManager } = getSession(self)
-  const { chains, stats } = chainData
-  const hasPaired = hasPairedReads(chainData)
+  const { chains, stats } = featureData
+  const hasPaired = hasPairedReads(featureData)
   const asm = assemblyManager.get(view.assemblyNames[0])
   const type = colorBy?.type || 'insertSizeAndOrientation'
   if (!asm) {

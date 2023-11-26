@@ -4,36 +4,36 @@ import { Assembly } from '@jbrowse/core/assemblyManager/assembly'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 
 // locals
-import { ChainData } from '../shared/fetchChains'
+import { FeatureData } from '../shared/fetchFeatures'
 import { LinearReadCloudDisplayModel } from './model'
 import { fillColor, strokeColor } from '../shared/color'
 import { fillRectCtx, strokeRectCtx } from './util'
 
-export function drawLongReadChains({
+export function drawLongReadFeatures({
   ctx,
   self,
-  chainData,
+  featureData,
   view,
   asm,
 }: {
   ctx: CanvasRenderingContext2D
   self: LinearReadCloudDisplayModel
-  chainData: ChainData
+  featureData: FeatureData
   view: LinearGenomeViewModel
   asm: Assembly
 }) {
   const distances: number[] = []
   const minXs: number[] = []
-  const { chains } = chainData
+  const { chains } = featureData
   const { height } = self
   const featureHeight = getConf(self, 'featureHeight')
 
   // get bounds on the 'distances' (pixel span that a particular split long
-  // read 'chain' would have in view)
-  for (const chain of chains) {
+  // read 'feature' would have in view)
+  for (const feature of chains) {
     let minX = Number.MAX_VALUE
     let maxX = Number.MIN_VALUE
-    for (const elt of chain) {
+    for (const elt of feature) {
       const refName = asm.getCanonicalRefName(elt.refName) || elt.refName
       const rs = view.bpToPx({ refName, coord: elt.start })?.offsetPx
       const re = view.bpToPx({ refName, coord: elt.end })?.offsetPx
@@ -52,14 +52,14 @@ export function drawLongReadChains({
   const scaler = (height - 20) / (maxD - minD)
   const halfHeight = featureHeight / 2 - 0.5
 
-  // draw split long read 'chains' as connected entities
+  // draw split long read 'features' as connected entities
   for (let i = 0; i < chains.length; i++) {
-    const chain = chains[i]
+    const feature = chains[i]
     const w = distances[i]
     const top = (Math.log(w) - minD) * scaler
     const min = minXs[i]
     fillRectCtx(min - view.offsetPx, top + halfHeight, w, 1, ctx, 'black')
-    const c1 = chain[0]
+    const c1 = feature[0]
     let primaryStrand: undefined | number
     if (!(c1.flags & 2048)) {
       primaryStrand = c1.strand
@@ -67,7 +67,7 @@ export function drawLongReadChains({
       const res = c1.SA?.split(';')[0].split(',')[2]
       primaryStrand = res === '-' ? -1 : 1
     }
-    for (const v0 of chain) {
+    for (const v0 of feature) {
       const ra = asm.getCanonicalRefName(v0.refName) || v0.refName
       const rs = view.bpToPx({ refName: ra, coord: v0.start })?.offsetPx
       const re = view.bpToPx({ refName: ra, coord: v0.end })?.offsetPx

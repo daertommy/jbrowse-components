@@ -1,6 +1,6 @@
-import { ChainData } from './fetchChains'
+import { FeatureData } from './fetchFeatures'
 
-export function hasPairedReads(features: ChainData) {
+export function hasPairedReads(features: FeatureData) {
   for (const f of features.chains.values()) {
     if (f[0].flags & 1) {
       return true
