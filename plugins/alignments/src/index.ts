@@ -43,7 +43,7 @@ export default class AlignmentsPlugin extends Plugin {
 export {
   linearPileupDisplayStateModelFactory,
   linearPileupDisplayConfigSchemaFactory,
-  SharedLinearPileupDisplayMixin,
 } from './LinearPileupDisplay'
+export { SharedLinearPileupDisplayMixin } from './SharedLinearPileupDisplay/model'
 export { type LinearPileupDisplayModel } from './LinearPileupDisplay/model'
 export * as MismatchParser from './MismatchParser'

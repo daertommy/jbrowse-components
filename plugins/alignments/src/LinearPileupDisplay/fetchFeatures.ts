@@ -23,20 +23,13 @@ export async function fetchFeatures(self: LinearPileupDisplayModel) {
 
   self.setLoading(true)
 
-  for (const block of view.staticBlocks.contentBlocks) {
-    if (!self.selfFeatures[block.key]) {
-      const ret = (await rpcManager.call(sessionId, 'CoreGetFeatures', {
-        sessionId,
-        regions: [block],
-        filterBy: getSnapshot(self.filterBy),
-        adapterConfig: self.adapterConfig,
-      })) as SimpleFeatureSerialized[]
-      self.setFeatures(
-        block.key,
-        ret.map(f => new SimpleFeature(f)),
-      )
-    }
-  }
+  const ret = (await rpcManager.call(sessionId, 'CoreGetFeatures', {
+    sessionId,
+    regions: view.staticBlocks.contentBlocks,
+    filterBy: getSnapshot(self.filterBy),
+    adapterConfig: self.adapterConfig,
+  })) as SimpleFeatureSerialized[]
+  self.setFeatures(ret.map(f => new SimpleFeature(f)))
 
   self.setLoading(false)
 }

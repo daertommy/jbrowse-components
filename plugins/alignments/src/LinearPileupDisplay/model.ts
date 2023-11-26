@@ -21,7 +21,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import SortIcon from '@mui/icons-material/Sort'
 
 // locals
-import { SharedLinearPileupDisplayMixin } from './SharedLinearPileupDisplayMixin'
+import { SharedLinearPileupDisplayMixin } from '../SharedLinearPileupDisplay/model'
 import { observable } from 'mobx'
 
 // async
@@ -78,7 +78,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
       sortReady: false,
       currSortBpPerPx: 0,
       loading: false,
-      selfFeatures: {} as Record<string, Feature[]>,
+      selfFeatures: undefined as Feature[] | undefined,
       modificationTagMap: observable.map<string, string>({}),
       modificationsReady: false,
     }))
@@ -86,8 +86,8 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
       /**
        * #action
        */
-      setFeatures(blockKey: string, f: Feature[]) {
-        self.selfFeatures[blockKey] = f
+      setFeatures(f: Feature[]) {
+        self.selfFeatures = f
       },
       /**
        * #action

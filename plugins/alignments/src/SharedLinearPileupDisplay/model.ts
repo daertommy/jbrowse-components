@@ -10,30 +10,27 @@ import {
   getConf,
 } from '@jbrowse/core/configuration'
 import SerializableFilterChain from '@jbrowse/core/pluggableElementTypes/renderers/util/serializableFilterChain'
-import { getRpcSessionId } from '@jbrowse/core/util/tracks'
 import {
   getEnv,
   getSession,
   isSessionModelWithWidgets,
   getContainingView,
-  SimpleFeature,
-  SimpleFeatureSerialized,
   Feature,
 } from '@jbrowse/core/util'
 import {
   LinearGenomeViewModel,
-  BaseLinearDisplay,
+  TrackHeightMixin,
+  FeatureDensityMixin,
 } from '@jbrowse/plugin-linear-genome-view'
 
 // icons
-import { ContentCopy as ContentCopyIcon } from '@jbrowse/core/ui/Icons'
-import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import FilterListIcon from '@mui/icons-material/ClearAll'
 
 // locals
 import LinearPileupDisplayBlurb from './components/LinearPileupDisplayBlurb'
 import { FilterModel, IFilter } from '../shared'
 import { ColorByModel, ExtraColorBy } from '../shared/color'
+import { BaseDisplay } from '@jbrowse/core/pluggableElementTypes'
 
 // async
 const FilterByTagDialog = lazy(() => import('../shared/FilterByTagDialog'))
@@ -54,14 +51,16 @@ type LGV = LinearGenomeViewModel
 /**
  * #stateModel SharedLinearPileupDisplayMixin
  * #category display
- * extends `BaseLinearDisplay`
+ * extends `BaseDisplay`, `TrackHeightMixin`, `FeatureDensityMixin
  */
 export function SharedLinearPileupDisplayMixin(
   configSchema: AnyConfigurationSchemaType,
 ) {
   return types
     .compose(
-      BaseLinearDisplay,
+      BaseDisplay,
+      TrackHeightMixin(),
+      FeatureDensityMixin(),
       types.model({
         /**
          * #property
@@ -317,30 +316,31 @@ export function SharedLinearPileupDisplayMixin(
          * #method
          */
         contextMenuItems() {
-          const feat = self.contextMenuFeature
-          return feat
-            ? [
-                {
-                  label: 'Open feature details',
-                  icon: MenuOpenIcon,
-                  onClick: (): void => {
-                    self.clearFeatureSelection()
-                    if (feat) {
-                      self.selectFeature(feat)
-                    }
-                  },
-                },
-                {
-                  label: 'Copy info to clipboard',
-                  icon: ContentCopyIcon,
-                  onClick: (): void => {
-                    if (feat) {
-                      self.copyFeatureToClipboard(feat)
-                    }
-                  },
-                },
-              ]
-            : []
+          return []
+          // const feat = self.contextMenuFeature
+          // return feat
+          //   ? [
+          //       {
+          //         label: 'Open feature details',
+          //         icon: MenuOpenIcon,
+          //         onClick: (): void => {
+          //           self.clearFeatureSelection()
+          //           if (feat) {
+          //             self.selectFeature(feat)
+          //           }
+          //         },
+          //       },
+          //       {
+          //         label: 'Copy info to clipboard',
+          //         icon: ContentCopyIcon,
+          //         onClick: (): void => {
+          //           if (feat) {
+          //             self.copyFeatureToClipboard(feat)
+          //           }
+          //         },
+          //       },
+          //     ]
+          //   : []
         },
 
         /**
@@ -367,67 +367,65 @@ export function SharedLinearPileupDisplayMixin(
             colorTagMap: Object.fromEntries(colorTagMap.toJSON()),
             config: self.rendererConfig,
             async onFeatureClick(_: unknown, featureId?: string) {
-              const session = getSession(self)
-              const { rpcManager } = session
-              try {
-                const f = featureId || self.featureIdUnderMouse
-                if (!f) {
-                  self.clearFeatureSelection()
-                } else {
-                  const sessionId = getRpcSessionId(self)
-                  const { feature } = (await rpcManager.call(
-                    sessionId,
-                    'CoreGetFeatureDetails',
-                    {
-                      featureId: f,
-                      sessionId,
-                      layoutId: getContainingView(self).id,
-                      rendererType: 'PileupRenderer',
-                    },
-                  )) as { feature: SimpleFeatureSerialized | undefined }
-
-                  if (feature) {
-                    self.selectFeature(new SimpleFeature(feature))
-                  }
-                }
-              } catch (e) {
-                console.error(e)
-                session.notify(`${e}`)
-              }
+              // const session = getSession(self)
+              // const { rpcManager } = session
+              // try {
+              //   const f = featureId || self.featureIdUnderMouse
+              //   if (!f) {
+              //     self.clearFeatureSelection()
+              //   } else {
+              //     const sessionId = getRpcSessionId(self)
+              //     const { feature } = (await rpcManager.call(
+              //       sessionId,
+              //       'CoreGetFeatureDetails',
+              //       {
+              //         featureId: f,
+              //         sessionId,
+              //         layoutId: getContainingView(self).id,
+              //         rendererType: 'PileupRenderer',
+              //       },
+              //     )) as { feature: SimpleFeatureSerialized | undefined }
+              //     if (feature) {
+              //       self.selectFeature(new SimpleFeature(feature))
+              //     }
+              //   }
+              // } catch (e) {
+              //   console.error(e)
+              //   session.notify(`${e}`)
+              // }
             },
 
             onClick() {
-              self.clearFeatureSelection()
+              // self.clearFeatureSelection()
             },
             // similar to click but opens a menu with further options
             async onFeatureContextMenu(_: unknown, featureId?: string) {
-              const session = getSession(self)
-              const { rpcManager } = session
-              try {
-                const f = featureId || self.featureIdUnderMouse
-                if (!f) {
-                  self.clearFeatureSelection()
-                } else {
-                  const sessionId = getRpcSessionId(self)
-                  const { feature } = (await rpcManager.call(
-                    sessionId,
-                    'CoreGetFeatureDetails',
-                    {
-                      featureId: f,
-                      sessionId,
-                      layoutId: getContainingView(self).id,
-                      rendererType: 'PileupRenderer',
-                    },
-                  )) as { feature: SimpleFeatureSerialized }
-
-                  if (feature) {
-                    self.setContextMenuFeature(new SimpleFeature(feature))
-                  }
-                }
-              } catch (e) {
-                console.error(e)
-                session.notify(`${e}`)
-              }
+              // const session = getSession(self)
+              // const { rpcManager } = session
+              // try {
+              //   const f = featureId || self.featureIdUnderMouse
+              //   if (!f) {
+              //     self.clearFeatureSelection()
+              //   } else {
+              //     const sessionId = getRpcSessionId(self)
+              //     const { feature } = (await rpcManager.call(
+              //       sessionId,
+              //       'CoreGetFeatureDetails',
+              //       {
+              //         featureId: f,
+              //         sessionId,
+              //         layoutId: getContainingView(self).id,
+              //         rendererType: 'PileupRenderer',
+              //       },
+              //     )) as { feature: SimpleFeatureSerialized }
+              //     if (feature) {
+              //       self.setContextMenuFeature(new SimpleFeature(feature))
+              //     }
+              //   }
+              // } catch (e) {
+              //   console.error(e)
+              //   session.notify(`${e}`)
+              // }
             },
           }
         },
@@ -540,10 +538,8 @@ export function SharedLinearPileupDisplayMixin(
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         ;(async () => {
           try {
-            const { doAfterAttachShared } = await import(
-              './doAfterAttachShared'
-            )
-            doAfterAttachShared(self)
+            const { doAfterAttach } = await import('./doAfterAttach')
+            doAfterAttach(self)
           } catch (e) {
             console.error(e)
             self.setError(e)

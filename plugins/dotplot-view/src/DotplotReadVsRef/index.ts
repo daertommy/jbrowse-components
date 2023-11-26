@@ -23,19 +23,20 @@ export default function DotplotReadVsRefMenuItem(pluginManager: PluginManager) {
             return {
               views: {
                 contextMenuItems() {
-                  const feature = self.contextMenuFeature
-                  return [
-                    ...superContextMenuItems(),
-                    ...(feature
-                      ? [
-                          {
-                            label: 'Dotplot of read vs ref',
-                            icon: AddIcon,
-                            onClick: () => onClick(feature, self),
-                          },
-                        ]
-                      : []),
-                  ]
+                  return []
+                  // const feature = self.contextMenuFeature
+                  // return [
+                  //   ...superContextMenuItems(),
+                  //   ...(feature
+                  //     ? [
+                  //         {
+                  //           label: 'Dotplot of read vs ref',
+                  //           icon: AddIcon,
+                  //           onClick: () => onClick(feature, self),
+                  //         },
+                  //       ]
+                  //     : []),
+                  // ]
                 },
               },
             }
