@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { observer } from 'mobx-react'
 import {
   assembleLocString,
@@ -6,6 +6,8 @@ import {
   getSession,
   isSessionModelWithWidgets,
 } from '@jbrowse/core/util'
+import { Menu } from '@jbrowse/core/ui'
+import { transaction } from 'mobx'
 
 // locals
 import SyntenyTooltip from './SyntenyTooltip'
@@ -13,15 +15,24 @@ import { LinearSyntenyDisplayModel } from '../model'
 import { getId, MAX_COLOR_RANGE } from '../drawSynteny'
 import { LinearSyntenyViewModel } from '../../LinearSyntenyView/model'
 
+interface ClickCoord {
+  clientX: number
+  clientY: number
+  feature: any
+}
+
 const LinearSyntenyRendering = observer(function ({
   model,
 }: {
   model: LinearSyntenyDisplayModel
 }) {
   const highResolutionScaling = 1
+  const xOffset = useRef(0)
+  const currScrollFrame = useRef<number>()
   const view = getContainingView(model) as LinearSyntenyViewModel
   const height = view.middleComparativeHeight
   const width = view.width
+  const [anchorEl, setAnchorEl] = useState<ClickCoord>()
 
   const [tooltip, setTooltip] = useState('')
   const [currX, setCurrX] = useState<number>()
@@ -55,10 +66,31 @@ const LinearSyntenyRendering = observer(function ({
         ref={k1}
         width={width}
         height={height}
-        style={{ width, height, position: 'absolute', pointerEvents: 'none' }}
+        style={{
+          width,
+          height,
+          position: 'absolute',
+          pointerEvents: 'none',
+        }}
       />
       <canvas
         ref={k2}
+        onWheel={event => {
+          if (Math.abs(event.deltaY) < Math.abs(event.deltaX)) {
+            xOffset.current += event.deltaX
+          }
+          if (currScrollFrame.current === undefined) {
+            currScrollFrame.current = requestAnimationFrame(() => {
+              transaction(() => {
+                for (const v of view.views) {
+                  v.horizontalScroll(xOffset.current)
+                }
+                xOffset.current = 0
+                currScrollFrame.current = undefined
+              })
+            })
+          }
+        }}
         onMouseMove={event => {
           const ref1 = model.clickMapCanvas
           const ref2 = model.cigarClickMapCanvas
@@ -166,6 +198,31 @@ const LinearSyntenyRendering = observer(function ({
             )
           }
         }}
+        onContextMenu={event => {
+          event.preventDefault()
+          const ref1 = model.clickMapCanvas
+          const ref2 = model.cigarClickMapCanvas
+          if (!ref1 || !ref2) {
+            return
+          }
+          const rect = ref1.getBoundingClientRect()
+          const ctx1 = ref1.getContext('2d')
+          const ctx2 = ref2.getContext('2d')
+          if (!ctx1 || !ctx2) {
+            return
+          }
+          const { clientX, clientY } = event
+          const x = clientX - rect.left
+          const y = clientY - rect.top
+          const [r1, g1, b1] = ctx1.getImageData(x, y, 1, 1).data
+          const unitMultiplier = Math.floor(MAX_COLOR_RANGE / model.numFeats)
+          const id = getId(r1, g1, b1, unitMultiplier)
+          const f = model.featPositions[id]
+          if (f) {
+            model.setClickId(f.f.id())
+            setAnchorEl({ clientX, clientY, feature: f })
+          }
+        }}
         data-testid="synteny_canvas"
         style={{ width, height, position: 'absolute' }}
         width={width * highResolutionScaling}
@@ -195,6 +252,39 @@ const LinearSyntenyRendering = observer(function ({
       />
       {model.mouseoverId && tooltip && currX && currY ? (
         <SyntenyTooltip x={currX} y={currY} title={tooltip} />
+      ) : null}
+      {anchorEl ? (
+        <Menu
+          onMenuItemClick={() => {
+            setAnchorEl(undefined)
+          }}
+          anchorEl={{
+            nodeType: 1,
+            getBoundingClientRect: () => {
+              const x = anchorEl.clientX
+              const y = anchorEl.clientY
+              return {
+                top: y,
+                left: x,
+                bottom: y,
+                right: x,
+                width: 0,
+                height: 0,
+                x,
+                y,
+                toJSON() {},
+              }
+            },
+          }}
+          onClose={() => setAnchorEl(undefined)}
+          open={Boolean(anchorEl)}
+          menuItems={[
+            {
+              label: 'Hello',
+              onClick: () => {},
+            },
+          ]}
+        />
       ) : null}
     </div>
   )

@@ -21,6 +21,7 @@ const useStyles = makeStyles()(theme => ({
     padding: '4px 8px',
     fontSize: theme.typography.pxToRem(12),
     lineHeight: `${round(14 / 10)}em`,
+    zIndex: 100000, // exceeds widget drawer
     maxWidth: 300,
     wordWrap: 'break-word',
   },
@@ -99,8 +100,7 @@ const Tooltip = observer(function Tooltip({
         <div
           ref={setAnchorEl}
           className={classes.tooltip}
-          // zIndex needed to go over widget drawer
-          style={{ ...styles.popper, zIndex: 100000 }}
+          style={styles.popper}
           {...attributes.popper}
         >
           <TooltipContents
