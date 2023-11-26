@@ -17,9 +17,9 @@ import {
   isSessionModelWithWidgets,
   getContainingView,
   SimpleFeature,
+  SimpleFeatureSerialized,
   Feature,
 } from '@jbrowse/core/util'
-
 import {
   LinearGenomeViewModel,
   BaseLinearDisplay,
@@ -33,14 +33,15 @@ import FilterListIcon from '@mui/icons-material/ClearAll'
 // locals
 import LinearPileupDisplayBlurb from './components/LinearPileupDisplayBlurb'
 import { FilterModel, IFilter } from '../shared'
-import { SimpleFeatureSerialized } from '@jbrowse/core/util/simpleFeature'
 import { ColorByModel, ExtraColorBy } from '../shared/color'
 
 // async
-const FilterByTagDlg = lazy(() => import('../shared/FilterByTag'))
-const ColorByTagDlg = lazy(() => import('./components/ColorByTag'))
-const SetFeatureHeightDlg = lazy(() => import('./components/SetFeatureHeight'))
-const SetMaxHeightDlg = lazy(() => import('./components/SetMaxHeight'))
+const FilterByTagDialog = lazy(() => import('../shared/FilterByTagDialog'))
+const ColorByTagDialog = lazy(() => import('./components/ColorByTagDialog'))
+const SetFeatureHeightDialog = lazy(
+  () => import('./components/SetFeatureHeightDialog'),
+)
+const SetMaxHeightDialog = lazy(() => import('./components/SetMaxHeightDialog'))
 
 // using a map because it preserves order
 const rendererTypes = new Map([
@@ -464,7 +465,7 @@ export function SharedLinearPileupDisplayMixin(
               label: 'Color by tag...',
               onClick: () => {
                 getSession(self).queueDialog(handleClose => [
-                  ColorByTagDlg,
+                  ColorByTagDialog,
                   { model: self, handleClose },
                 ])
               },
@@ -483,7 +484,7 @@ export function SharedLinearPileupDisplayMixin(
               icon: FilterListIcon,
               onClick: () => {
                 getSession(self).queueDialog(handleClose => [
-                  FilterByTagDlg,
+                  FilterByTagDialog,
                   { model: self, handleClose },
                 ])
               },
@@ -509,7 +510,7 @@ export function SharedLinearPileupDisplayMixin(
                   label: 'Manually set height',
                   onClick: () => {
                     getSession(self).queueDialog(handleClose => [
-                      SetFeatureHeightDlg,
+                      SetFeatureHeightDialog,
                       { model: self, handleClose },
                     ])
                   },
@@ -520,7 +521,7 @@ export function SharedLinearPileupDisplayMixin(
               label: 'Set max height...',
               onClick: () => {
                 getSession(self).queueDialog(handleClose => [
-                  SetMaxHeightDlg,
+                  SetMaxHeightDialog,
                   { model: self, handleClose },
                 ])
               },

@@ -6,18 +6,21 @@ import {
   getSession,
   getContainingView,
   SimpleFeature,
+  SimpleFeatureSerialized,
 } from '@jbrowse/core/util'
+import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 
 // locals
-import { getUniqueTagValues } from '../shared'
-import { SimpleFeatureSerialized } from '@jbrowse/core/util/simpleFeature'
+// locals
 import { createAutorun } from '../util'
+import { SharedLinearPileupDisplayModel } from './SharedLinearPileupDisplayMixin'
+import { getUniqueTagValues } from '../shared'
 
-export function doAfterAttachShared(self: SharedPileupModel) {
+export function doAfterAttachShared(self: SharedLinearPileupDisplayModel) {
   createAutorun(
     self,
     async () => {
-      const view = getContainingView(self) as LGV
+      const view = getContainingView(self) as LinearGenomeViewModel
       if (!self.autorunReady) {
         return
       }
